@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c0273fcf29891c4c872995eb16d50b8, type: 3}
+  m_Name: Revolver_Peacemaker
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponDataSO
+  displayName: "Rev\xF3lver"
+  ammoType: {fileID: 11400000, guid: 41549ea60eb576843a199d4f43f4f19b, type: 2}
+  damage: 40
+  range: 40
+  damageFalloff:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.5018808
+      value: 0.50738984
+      inSlope: -0.5
+      outSlope: -0.5
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  impactForce: 4
+  hitMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  timeBetweenShots: 0.35
+  shotBufferTime: 0.15
+  magazineSize: 6
+  startingMagazine: 6
+  reloadStartTime: 0.35
+  reloadPerRoundTime: 0.45
+  reloadEndTime: 0.3
+  canInterruptReload: 1
+  hipSpread: 1.5
+  aimSpread: 0.3
+  moveSpreadBonus: 1.5
+  airSpreadBonus: 4
+  recoilVertical: 3
+  recoilHorizontal: 1
+  visualKickBack: 0.06
+  visualKickRotation: 10
+  aimFov: 60
+  aimSpeed: 8
+  aimMoveMultiplier: 0.6
+  aimSensitivityMultiplier: 0.75
+  equipTime: 0.3
+  sprintToFireTime: 0.2
+  projectilePrefab: {fileID: 0}
+  projectileSpeed: 1
+  projectileGravityScale: 0
+  projectileLifetime: 4

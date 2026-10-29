@@ -29,4 +29,12 @@ public class PlayerStatsSO : ScriptableObject
     [Min(0.01f)] public float mouseSensitivity = 0.12f;
     [Range(45f, 90f)] public float maxLookAngle = 85f;
     public bool invertY = false;
+
+    [Header("Culatazo")]
+    [Min(0f)] public float meleeDamage = 50f;
+    [Min(0.1f)] public float meleeRange = 1.8f;
+    [Min(0.05f)] public float meleeRadius = 0.35f;
+    [Min(0.1f)] public float meleeCooldown = 0.9f;
+    [Min(0f)] public float meleeHitDelay = 0.12f;
+    [Min(0f)] public float meleeForce = 6f;
 }
