@@ -24,7 +24,8 @@ public class PlayerWeaponController : MonoBehaviour
     public Weapon CurrentWeapon => currentIndex >= 0 && currentIndex < weapons.Count ? weapons[currentIndex] : null;
     public IReadOnlyList<Weapon> Weapons => weapons;
     public bool IsAiming { get; private set; }
-    public bool IsBusy => Time.time < busyUntil;
+    public bool IsHolstered { get; private set; }
+    public bool IsBusy => IsHolstered || Time.time < busyUntil;
     public float CurrentSpread { get; private set; }
 
     public event Action<Weapon> WeaponChanged;
@@ -58,8 +59,8 @@ public class PlayerWeaponController : MonoBehaviour
         input.ReloadPressed -= RequestReload;
         input.WeaponSlotPressed -= Equip;
         input.WeaponScrolled -= Cycle;
-        motor.SetSpeedMultiplier(1f);
-        motor.SetSprintBlocked(false);
+        motor.ClearSpeedModifier(this);
+        motor.SetSprintBlocked(this, false);
         look.SetSensitivityMultiplier(1f);
         IsAiming = false;
     }
@@ -95,6 +96,16 @@ public class PlayerWeaponController : MonoBehaviour
         busyUntil = Mathf.Max(busyUntil, Time.time + duration);
     }
 
+    public void SetHolstered(bool holstered)
+    {
+        IsHolstered = holstered;
+        if (!holstered) return;
+
+        if (CurrentWeapon != null) CurrentWeapon.StopReloadImmediate();
+        fireQueued = false;
+        IsAiming = false;
+    }
+
     private void Cycle(int direction)
     {
         if (weapons.Count < 2) return;
@@ -121,13 +132,13 @@ public class PlayerWeaponController : MonoBehaviour
         if (wasSprinting && !sprinting) sprintEndedTime = Time.time;
         wasSprinting = sprinting;
 
-        motor.SetSprintBlocked(IsAiming || IsBusy || Time.time < blockSprintUntil);
+        motor.SetSprintBlocked(this, IsAiming || IsBusy || Time.time < blockSprintUntil);
     }
 
     private void UpdateAim(WeaponDataSO data)
     {
         IsAiming = input.AimHeld && !IsBusy;
-        motor.SetSpeedMultiplier(IsAiming ? data.aimMoveMultiplier : 1f);
+        motor.SetSpeedModifier(this, IsAiming ? data.aimMoveMultiplier : 1f);
         look.SetSensitivityMultiplier(IsAiming ? data.aimSensitivityMultiplier : 1f);
     }
 

@@ -30,6 +30,11 @@ public class WeaponViewAnimator : MonoBehaviour
     [SerializeField] private float equipDropDistance = 0.25f;
     [SerializeField] private float equipDropAngle = 35f;
 
+    [Header("Arma guardada")]
+    [SerializeField] private float holsterDropDistance = 0.4f;
+    [SerializeField] private float holsterAngle = 50f;
+    [SerializeField] private float holsterSpeed = 5f;
+
     [Header("Culatazo")]
     [SerializeField] private float meleeDuration = 0.35f;
     [SerializeField] private Vector3 meleePositionOffset = new Vector3(0.05f, 0.02f, 0.25f);
@@ -39,6 +44,7 @@ public class WeaponViewAnimator : MonoBehaviour
     private float aimBlend;
     private float sprintBlend;
     private float equipBlend;
+    private float holsterBlend;
     private float bobTimer;
     private float meleeTimer;
     private Vector3 swayOffset;
@@ -93,6 +99,8 @@ public class WeaponViewAnimator : MonoBehaviour
         sprintBlend = Mathf.MoveTowards(sprintBlend, motor.IsSprinting ? 1f : 0f, sprintBlendSpeed * dt);
         equipBlend = Mathf.MoveTowards(equipBlend, 1f, dt / Mathf.Max(0.01f, data.equipTime));
         meleeTimer = Mathf.Max(0f, meleeTimer - dt);
+        holsterBlend = Mathf.MoveTowards(holsterBlend, weapons.IsHolstered ? 1f : 0f, holsterSpeed * dt);
+        float holsterSmooth = Mathf.SmoothStep(0f, 1f, holsterBlend);
 
         float aimSmooth = Mathf.SmoothStep(0f, 1f, aimBlend);
         float equipSmooth = Mathf.SmoothStep(0f, 1f, equipBlend);
@@ -118,12 +126,13 @@ public class WeaponViewAnimator : MonoBehaviour
             + sprintPositionOffset * sprintBlend
             + swayOffset + bob + recoilOffset
             + meleePositionOffset * meleeWeight
-            + Vector3.down * equipDropDistance * (1f - equipSmooth);
+            + Vector3.down * equipDropDistance * (1f - equipSmooth)
+            + Vector3.down * holsterDropDistance * holsterSmooth;
 
         Vector3 rotation = sprintRotation * sprintBlend
             + recoilRotation
             + meleeRotation * meleeWeight
-            + new Vector3(equipDropAngle * (1f - equipSmooth), 0f, 0f);
+            + new Vector3(equipDropAngle * (1f - equipSmooth) + holsterAngle * holsterSmooth, 0f, 0f);
 
         current.transform.localPosition = position;
         current.transform.localRotation = Quaternion.Euler(rotation);

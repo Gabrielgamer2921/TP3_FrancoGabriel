@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c0273fcf29891c4c872995eb16d50b8, type: 3}
-  m_Name: Revolver_Winchester1873
+  m_Name: Rifle_Winchester1873
   m_EditorClassIdentifier: Assembly-CSharp::WeaponDataSO
-  displayName: "Rev\xF3lver"
+  displayName: Winchester 1873
   ammoType: {fileID: 11400000, guid: 3479faf901c67ec4ab57c6d617288af1, type: 2}
   damage: 70
   range: 150
@@ -22,17 +22,17 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: -0.2
+      outSlope: -0.2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 0.8045293
-      value: 0.49983117
-      inSlope: -0.5
-      outSlope: -0.5
+      time: 1
+      value: 0.8
+      inSlope: -0.2
+      outSlope: -0.2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -40,7 +40,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  impactForce: 4
+  impactForce: 8
   hitMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -54,19 +54,22 @@ MonoBehaviour:
   canInterruptReload: 1
   hipSpread: 3
   aimSpread: 0.1
-  moveSpreadBonus: 1.5
-  airSpreadBonus: 4
+  moveSpreadBonus: 2.5
+  airSpreadBonus: 6
   recoilVertical: 5
   recoilHorizontal: 0.6
-  visualKickBack: 0.06
-  visualKickRotation: 10
+  visualKickBack: 0.1
+  visualKickRotation: 14
   aimFov: 45
   aimSpeed: 5
-  aimMoveMultiplier: 0.6
+  aimMoveMultiplier: 0.5
   aimSensitivityMultiplier: 0.75
-  equipTime: 0.3
-  sprintToFireTime: 0.2
+  equipTime: 0.5
+  sprintToFireTime: 0.3
+  visualBulletPrefab: {fileID: 0}
+  visualBulletSpeed: 120
+  delayHitUntilBulletArrives: 1
   projectilePrefab: {fileID: 7370517504575523605, guid: b5a3a5157d4f9044d8ad7eb34bc17cf2, type: 3}
-  projectileSpeed: 160
+  projectileSpeed: 140
   projectileGravityScale: 0.4
   projectileLifetime: 4

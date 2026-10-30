@@ -45,6 +45,8 @@ public class PlayerMelee : MonoBehaviour
         if (!Physics.SphereCast(origin, stats.meleeRadius, direction, out RaycastHit hit, stats.meleeRange, hitMask, QueryTriggerInteraction.Ignore))
             yield break;
 
+        if (hit.collider.transform.IsChildOf(transform)) yield break;
+
         IDamageable damageable = hit.collider.GetComponentInParent<IDamageable>();
         damageable?.TakeDamage(new DamageInfo(stats.meleeDamage, hit.point, direction, gameObject, DamageType.Melee));
 

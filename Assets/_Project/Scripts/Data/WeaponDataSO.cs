@@ -50,6 +50,11 @@ public class WeaponDataSO : ScriptableObject
     [Min(0f)] public float equipTime = 0.35f;
     [Min(0f)] public float sprintToFireTime = 0.2f;
 
+    [Header("Bala visual (solo armas hitscan)")]
+    public VisualBullet visualBulletPrefab;
+    [Min(0f)] public float visualBulletSpeed = 120f;
+    public bool delayHitUntilBulletArrives = true;
+
     [Header("Proyectil (solo armas de proyectil)")]
     public Projectile projectilePrefab;
     [Min(1f)] public float projectileSpeed = 150f;

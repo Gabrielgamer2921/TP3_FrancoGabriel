@@ -30,6 +30,22 @@ public class PlayerStatsSO : ScriptableObject
     [Range(45f, 90f)] public float maxLookAngle = 85f;
     public bool invertY = false;
 
+    [Header("Vida")]
+    [Min(1f)] public float maxHealth = 100f;
+
+    [Header("Combate y regeneración")]
+    [Min(0f)] public float combatGraceTime = 4f;
+    [Min(0f)] public float regenDelay = 3f;
+    [Min(0f)] public float regenCap = 25f;
+    [Min(0f)] public float regenPerSecond = 4f;
+
+    [Header("Vendajes")]
+    [Min(0)] public int startingBandages = 2;
+    [Min(1)] public int maxBandages = 4;
+    [Min(0f)] public float bandageHealAmount = 40f;
+    [Min(0.1f)] public float bandageUseTime = 2.5f;
+    [Range(0.1f, 1f)] public float bandageMoveMultiplier = 0.5f;
+
     [Header("Culatazo")]
     [Min(0f)] public float meleeDamage = 50f;
     [Min(0.1f)] public float meleeRange = 1.8f;

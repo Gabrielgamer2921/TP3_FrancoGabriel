@@ -136,6 +136,9 @@ public abstract class Weapon : MonoBehaviour
 
     protected void ApplyHit(Collider hitCollider, Vector3 point, Vector3 normal, Vector3 direction, float distance)
     {
+        if (hitCollider == null) return;
+        if (owner != null && hitCollider.transform.IsChildOf(owner.transform)) return;
+
         float falloff = data.damageFalloff.Evaluate(Mathf.Clamp01(distance / data.range));
         WeaponHit result = new WeaponHit { point = point, normal = normal, collider = hitCollider };
 

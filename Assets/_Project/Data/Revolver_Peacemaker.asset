@@ -15,22 +15,22 @@ MonoBehaviour:
   displayName: "Rev\xF3lver"
   ammoType: {fileID: 11400000, guid: 41549ea60eb576843a199d4f43f4f19b, type: 2}
   damage: 40
-  range: 40
+  range: 50
   damageFalloff:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: -0.5
+      outSlope: -0.5
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 0.5018808
-      value: 0.50738984
+      time: 1
+      value: 0.5
       inSlope: -0.5
       outSlope: -0.5
       tangentMode: 0
@@ -65,8 +65,11 @@ MonoBehaviour:
   aimMoveMultiplier: 0.6
   aimSensitivityMultiplier: 0.75
   equipTime: 0.3
-  sprintToFireTime: 0.2
+  sprintToFireTime: 0.15
+  visualBulletPrefab: {fileID: 8298067500552633560, guid: 8d1ca78a1e1a86647a86dcf246b9b325, type: 3}
+  visualBulletSpeed: 120
+  delayHitUntilBulletArrives: 1
   projectilePrefab: {fileID: 0}
-  projectileSpeed: 1
-  projectileGravityScale: 0
+  projectileSpeed: 150
+  projectileGravityScale: 0.4
   projectileLifetime: 4

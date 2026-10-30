@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c56a9aa88f246b64b8c763423ea9b71e, type: 3}
   m_Name: Ammo_4440
   m_EditorClassIdentifier: Assembly-CSharp::AmmoTypeSO
-  displayName: .45 Colt
+  displayName: .44-40
   startingReserve: 16
   maxReserve: 40
   pickupAmount: 10

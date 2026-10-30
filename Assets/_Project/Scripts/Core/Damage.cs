@@ -4,7 +4,8 @@ public enum DamageType
 {
     Bullet,
     Melee,
-    Explosion
+    Explosion,
+    Environment
 }
 
 public struct DamageInfo

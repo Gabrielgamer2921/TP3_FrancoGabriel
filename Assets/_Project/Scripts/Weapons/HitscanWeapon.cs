@@ -4,16 +4,31 @@ public class HitscanWeapon : Weapon
 {
     protected override void Shoot(Vector3 origin, Vector3 direction)
     {
-        Vector3 traceStart = muzzle != null ? muzzle.position : origin;
+        Vector3 start = muzzle != null ? muzzle.position : origin;
+        bool hasHit = Physics.Raycast(origin, direction, out RaycastHit hit, data.range, data.hitMask, QueryTriggerInteraction.Ignore);
+        Vector3 end = hasHit ? hit.point : origin + direction * data.range;
 
-        if (Physics.Raycast(origin, direction, out RaycastHit hit, data.range, data.hitMask, QueryTriggerInteraction.Ignore))
+        RaiseShotTraced(start, end);
+
+        bool useVisualBullet = data.visualBulletPrefab != null && data.visualBulletSpeed > 0f;
+        bool delayHit = useVisualBullet && data.delayHitUntilBulletArrives;
+
+        if (hasHit && !delayHit) ApplyHit(hit.collider, hit.point, hit.normal, direction, hit.distance);
+
+        if (!useVisualBullet) return;
+
+        VisualBullet bullet = Instantiate(data.visualBulletPrefab, start, Quaternion.identity);
+        if (hasHit && delayHit)
         {
-            ApplyHit(hit.collider, hit.point, hit.normal, direction, hit.distance);
-            RaiseShotTraced(traceStart, hit.point);
+            Collider hitCollider = hit.collider;
+            Vector3 point = hit.point;
+            Vector3 normal = hit.normal;
+            float distance = hit.distance;
+            bullet.Launch(start, end, data.visualBulletSpeed, () => ApplyHit(hitCollider, point, normal, direction, distance));
         }
         else
         {
-            RaiseShotTraced(traceStart, origin + direction * data.range);
+            bullet.Launch(start, end, data.visualBulletSpeed, null);
         }
     }
 }

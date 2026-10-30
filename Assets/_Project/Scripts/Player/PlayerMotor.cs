@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
@@ -15,8 +16,8 @@ public class PlayerMotor : MonoBehaviour
     private float currentHeight;
     private float lastGroundedTime = float.NegativeInfinity;
     private bool crouchToggled;
-    private float speedMultiplier = 1f;
-    private bool sprintBlocked;
+    private readonly Dictionary<object, float> speedModifiers = new Dictionary<object, float>();
+    private readonly HashSet<object> sprintBlockers = new HashSet<object>();
 
     public bool IsGrounded => controller.isGrounded;
     public bool IsSprinting { get; private set; }
@@ -53,9 +54,15 @@ public class PlayerMotor : MonoBehaviour
         UpdateMovement();
     }
 
-    public void SetSpeedMultiplier(float multiplier) => speedMultiplier = Mathf.Max(0f, multiplier);
+    public void SetSpeedModifier(object source, float multiplier) => speedModifiers[source] = Mathf.Max(0f, multiplier);
 
-    public void SetSprintBlocked(bool blocked) => sprintBlocked = blocked;
+    public void ClearSpeedModifier(object source) => speedModifiers.Remove(source);
+
+    public void SetSprintBlocked(object source, bool blocked)
+    {
+        if (blocked) sprintBlockers.Add(source);
+        else sprintBlockers.Remove(source);
+    }
 
     private void UpdateMovement()
     {
@@ -85,7 +92,7 @@ public class PlayerMotor : MonoBehaviour
 
     private bool CanSprint(Vector2 moveInput)
     {
-        if (!input.SprintHeld || sprintBlocked || moveInput.y < 0.1f) return false;
+        if (!input.SprintHeld || sprintBlockers.Count > 0 || moveInput.y < 0.1f) return false;
 
         if (IsCrouching)
         {
@@ -101,7 +108,8 @@ public class PlayerMotor : MonoBehaviour
     {
         float speed = IsCrouching ? stats.crouchSpeed : IsSprinting ? stats.sprintSpeed : stats.walkSpeed;
         if (moveInput.y < -0.1f) speed *= stats.backwardMultiplier;
-        return speed * speedMultiplier;
+        foreach (float modifier in speedModifiers.Values) speed *= modifier;
+        return speed;
     }
 
     private void TryJump()
