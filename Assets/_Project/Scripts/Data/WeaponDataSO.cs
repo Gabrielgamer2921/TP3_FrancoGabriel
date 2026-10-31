@@ -14,6 +14,9 @@ public class WeaponDataSO : ScriptableObject
     [Min(0f)] public float impactForce = 4f;
     public LayerMask hitMask = ~0;
 
+    [Header("Ruido")]
+    [Min(0f)] public float noiseRadius = 40f;
+
     [Header("Cadencia")]
     [Min(0.05f)] public float timeBetweenShots = 0.35f;
     [Min(0f)] public float shotBufferTime = 0.15f;
@@ -60,4 +63,5 @@ public class WeaponDataSO : ScriptableObject
     [Min(1f)] public float projectileSpeed = 150f;
     [Min(0f)] public float projectileGravityScale = 0.4f;
     [Min(0.1f)] public float projectileLifetime = 4f;
+    [Min(0f)] public float zeroDistance = 60f;
 }

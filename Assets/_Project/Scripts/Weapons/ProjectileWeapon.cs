@@ -27,7 +27,12 @@ public class ProjectileWeapon : Weapon
             return;
         }
 
-        Projectile projectile = Instantiate(data.projectilePrefab, spawnPoint, Quaternion.LookRotation(shotDirection));
-        projectile.Launch(this, owner, shotDirection * data.projectileSpeed, data.projectileGravityScale, data.projectileLifetime);
+        Vector3 velocity = shotDirection * data.projectileSpeed;
+        float zeroedDistance = Mathf.Min(Vector3.Distance(spawnPoint, target), data.zeroDistance);
+        float flightTime = zeroedDistance / data.projectileSpeed;
+        velocity -= Physics.gravity * data.projectileGravityScale * flightTime * 0.5f;
+
+        Projectile projectile = Instantiate(data.projectilePrefab, spawnPoint, Quaternion.LookRotation(velocity));
+        projectile.Launch(this, owner, velocity, data.projectileGravityScale, data.projectileLifetime);
     }
 }

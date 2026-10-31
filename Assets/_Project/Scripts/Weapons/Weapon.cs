@@ -95,6 +95,7 @@ public abstract class Weapon : MonoBehaviour
         Vector3 direction = ApplySpread(aimCamera.transform.forward, spread);
         Shoot(origin, direction);
 
+        NoiseSystem.Emit(owner.transform.position, data.noiseRadius, owner);
         look.AddRecoil(data.recoilVertical, Random.Range(-data.recoilHorizontal, data.recoilHorizontal));
         Fired?.Invoke();
         AmmoChanged?.Invoke();

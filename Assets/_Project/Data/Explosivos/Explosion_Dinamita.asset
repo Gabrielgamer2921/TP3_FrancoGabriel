@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a743891d2a91b6944835b38b0a80f344, type: 3}
+  m_Name: Explosion_Dinamita
+  m_EditorClassIdentifier: Assembly-CSharp::ExplosionDataSO
+  radius: 6
+  maxDamage: 150
+  minDamage: 15
+  coverDamageMultiplier: 0.35
+  affectedLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  pushVelocity: 10
+  upwardsModifier: 1.5
+  effectPrefab: {fileID: 8994366737536031277, guid: fdb57320eec407b499bf015bcac58d3c, type: 3}
+  noiseRadius: 80
+  cameraShake: 1

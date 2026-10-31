@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a3a35cb4a8e6ed4c864cd3eb90068d8, type: 3}
+  m_Name: Enemy_Pistolero
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
+  displayName: Pistolero
+  combatStyle: 0
+  maxHealth: 80
+  staggerTime: 0.25
+  corpseLifetime: 12
+  deathImpulse: 4
+  patrolSpeed: 2
+  chaseSpeed: 4.8
+  turnSpeed: 360
+  patrolWaitTime: 2
+  viewDistance: 28
+  viewAngle: 110
+  closeAwarenessRange: 2.5
+  detectionTime: 0.7
+  suspicionThreshold: 0.35
+  awarenessDecay: 0.25
+  alertAllyRadius: 20
+  memoryTime: 5
+  searchDuration: 10
+  investigateDuration: 5
+  damage: 8
+  timeBetweenShots: 0.55
+  magazineSize: 6
+  reloadTime: 2.2
+  attackRange: 22
+  bulletSpeed: 110
+  shotNoiseRadius: 30
+  baseSpread: 3.5
+  spreadPerMeter: 0.08
+  movingTargetSpread: 2.5
+  movingShooterSpread: 1.5
+  aimSettleTime: 1.2
+  preferredMinDistance: 5
+  preferredMaxDistance: 11
+  repositionIntervalMin: 2
+  repositionIntervalMax: 3.5
+  usesCover: 1
+  coverChance: 0.4
+  coverSearchRadius: 12
+  coverStayTime: 1.2
+  peekTime: 2
+  canRingAlarm: 1
+  alarmSearchRadius: 40
+  telegraphTime: 1.5
+  idleSweepAngle: 40
+  loot:
+  - prefab: {fileID: 5618480141564402141, guid: d1edda5f5252b3d4a8f8a8287f3f6d5d, type: 3}
+    chance: 0.6
+  - prefab: {fileID: 5323804626037053704, guid: c8082acc0f927614aa476e28e9a9f50d, type: 3}
+    chance: 0.1
