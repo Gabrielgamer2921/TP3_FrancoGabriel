@@ -54,6 +54,13 @@ public class EnemyDataSO : ScriptableObject
     [Min(1f)] public float bulletSpeed = 110f;
     [Min(0f)] public float shotNoiseRadius = 30f;
 
+    [Header("Perdigones y caída de daño")]
+    [Min(1)] public int pelletsPerShot = 1;
+    [Min(0f)] public float pelletSpread;
+    [Min(0f)] public float falloffStartDistance = 1000f;
+    [Min(0f)] public float falloffEndDistance = 1000f;
+    [Range(0f, 1f)] public float minFalloffMultiplier = 1f;
+
     [Header("Puntería (grados)")]
     [Min(0f)] public float baseSpread = 3.5f;
     [Min(0f)] public float spreadPerMeter = 0.08f;
@@ -81,14 +88,22 @@ public class EnemyDataSO : ScriptableObject
     [Header("Dinamita")]
     public ThrowableDataSO throwable;
     [Min(0)] public int dynamiteCount;
-    [Min(0f)] public float dynamiteCooldown = 10f;
+    [Min(0f)] public float dynamiteCooldown = 6f;
     [Min(0f)] public float hiddenTimeBeforeThrow = 3f;
+
+    [Header("Dinamita: nivel de inteligencia (d20)")]
+    [Range(0, 20)] public int dynamiteLevelMin = 5;
+    [Range(0, 20)] public int dynamiteLevelMax = 7;
+    [Min(0.5f)] public float dynamiteRollInterval = 5f;
+    [Range(0, 20)] public int hiddenLevelBonus = 4;
+    public bool logDynamiteRolls = true;
     [Min(0f)] public float dynamiteMinDistance = 6f;
     [Min(0f)] public float dynamiteMaxDistance = 22f;
     [Min(0f)] public float fuseAfterLanding = 0.8f;
 
     [Header("Francotirador")]
     [Min(0f)] public float telegraphTime = 1.5f;
+    [Min(0f)] public float aimTrackingSpeed = 5f;
     [Range(0f, 90f)] public float idleSweepAngle = 40f;
 
     [Header("Botín")]

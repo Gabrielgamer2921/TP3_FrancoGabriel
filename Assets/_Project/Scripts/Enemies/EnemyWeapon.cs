@@ -48,29 +48,13 @@ public class EnemyWeapon : MonoBehaviour
         nextFireTime = Time.time + data.timeBetweenShots;
 
         Vector3 origin = muzzle.position;
-        Vector3 direction = ApplySpread((target - origin).normalized, spread);
-        float maxDistance = data.attackRange * 1.5f;
+        Vector3 aimDirection = (target - origin).normalized;
+        int pellets = Mathf.Max(1, data.pelletsPerShot);
 
-        bool hasHit = LineOfSight.TryGetFirstHit(origin, direction, maxDistance, transform, hitMask, out RaycastHit hit);
-        Vector3 end = hasHit ? hit.point : origin + direction * maxDistance;
-
-        if (visualBulletPrefab != null)
+        for (int i = 0; i < pellets; i++)
         {
-            VisualBullet bullet = Instantiate(visualBulletPrefab, origin, Quaternion.identity);
-            if (hasHit)
-            {
-                Collider hitCollider = hit.collider;
-                Vector3 point = hit.point;
-                bullet.Launch(origin, end, data.bulletSpeed, () => ApplyHit(hitCollider, point, direction));
-            }
-            else
-            {
-                bullet.Launch(origin, end, data.bulletSpeed, null);
-            }
-        }
-        else if (hasHit)
-        {
-            ApplyHit(hit.collider, hit.point, direction);
+            float pelletSpread = spread + (pellets > 1 ? data.pelletSpread : 0f);
+            FirePellet(origin, ApplySpread(aimDirection, pelletSpread));
         }
 
         NoiseSystem.Emit(origin, data.shotNoiseRadius, gameObject);
@@ -80,13 +64,46 @@ public class EnemyWeapon : MonoBehaviour
         return true;
     }
 
-    private void ApplyHit(Collider hitCollider, Vector3 point, Vector3 direction)
+    private void FirePellet(Vector3 origin, Vector3 direction)
+    {
+        float maxDistance = data.attackRange * 1.5f;
+        bool hasHit = LineOfSight.TryGetFirstHit(origin, direction, maxDistance, transform, hitMask, out RaycastHit hit);
+        Vector3 end = hasHit ? hit.point : origin + direction * maxDistance;
+
+        if (visualBulletPrefab == null)
+        {
+            if (hasHit) ApplyHit(hit.collider, hit.point, direction, hit.distance);
+            return;
+        }
+
+        VisualBullet bullet = Instantiate(visualBulletPrefab, origin, Quaternion.identity);
+        if (hasHit)
+        {
+            Collider hitCollider = hit.collider;
+            Vector3 point = hit.point;
+            float distance = hit.distance;
+            bullet.Launch(origin, end, data.bulletSpeed, () => ApplyHit(hitCollider, point, direction, distance));
+        }
+        else
+        {
+            bullet.Launch(origin, end, data.bulletSpeed, null);
+        }
+    }
+
+    private void ApplyHit(Collider hitCollider, Vector3 point, Vector3 direction, float distance)
     {
         if (hitCollider == null) return;
         if (hitCollider.GetComponentInParent<EnemyAI>() != null) return;
 
+        float falloff = 1f;
+        if (distance > data.falloffStartDistance)
+        {
+            float range = Mathf.Max(0.01f, data.falloffEndDistance - data.falloffStartDistance);
+            falloff = Mathf.Lerp(1f, data.minFalloffMultiplier, (distance - data.falloffStartDistance) / range);
+        }
+
         IDamageable damageable = hitCollider.GetComponentInParent<IDamageable>();
-        damageable?.TakeDamage(new DamageInfo(data.damage, point, direction, gameObject, DamageType.Bullet));
+        damageable?.TakeDamage(new DamageInfo(data.damage * falloff, point, direction, gameObject, DamageType.Bullet));
 
         Rigidbody body = hitCollider.attachedRigidbody;
         if (body != null && !body.isKinematic) body.AddForceAtPosition(direction * 3f, point, ForceMode.Impulse);

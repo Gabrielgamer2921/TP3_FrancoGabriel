@@ -11,6 +11,8 @@ public class Health : MonoBehaviour, IDamageable
     public float Max => maxHealth;
     public float Normalized => maxHealth > 0f ? Current / maxHealth : 0f;
     public bool IsDead { get; private set; }
+    public bool Invulnerable { get; set; }
+    public float DamageTakenMultiplier { get; set; } = 1f;
 
     public event Action<DamageInfo> Damaged;
     public event Action<float> Healed;
@@ -31,8 +33,9 @@ public class Health : MonoBehaviour, IDamageable
 
     public virtual void TakeDamage(DamageInfo info)
     {
-        if (IsDead || info.amount <= 0f) return;
+        if (IsDead || Invulnerable || info.amount <= 0f) return;
 
+        info.amount *= DamageTakenMultiplier;
         Current = Mathf.Max(0f, Current - info.amount);
         Damaged?.Invoke(info);
         Changed?.Invoke(Current, maxHealth);

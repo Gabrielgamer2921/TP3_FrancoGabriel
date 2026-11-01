@@ -49,6 +49,7 @@ public class EnemyAI : MonoBehaviour
 
     private bool telegraphing;
     private float telegraphEndTime;
+    private Vector3 trackedAimPoint;
 
     private AlarmBell claimedBell;
     private bool engaged;
@@ -157,6 +158,26 @@ public class EnemyAI : MonoBehaviour
         EnterCombat(playerPosition, false);
     }
 
+    public void ApplyData(EnemyDataSO newData)
+    {
+        data = newData;
+        perception.Initialize(data);
+        weapon.Initialize(data);
+        agent.angularSpeed = data.turnSpeed;
+        canRingAlarm = false;
+
+        if (data.throwable != null && data.dynamiteCount > 0)
+        {
+            thrower = GetComponent<EnemyDynamiteThrower>();
+            if (thrower == null) thrower = gameObject.AddComponent<EnemyDynamiteThrower>();
+            thrower.Initialize(data, weapon.Muzzle);
+        }
+        else
+        {
+            thrower = null;
+        }
+    }
+
     public void AlertFromAlly(Vector3 position, float delay)
     {
         if (IsDead || State == EnemyState.Combat || State == EnemyState.RingAlarm) return;
@@ -206,7 +227,11 @@ public class EnemyAI : MonoBehaviour
         lastSeenTime = Time.time;
         perception.SetAwareness(1f);
 
-        if (State == EnemyState.Combat || State == EnemyState.RingAlarm) return;
+        if (State == EnemyState.Combat || State == EnemyState.RingAlarm)
+        {
+            SetEngaged(true);
+            return;
+        }
 
         SetState(EnemyState.Combat);
         SetEngaged(true);
@@ -362,8 +387,12 @@ public class EnemyAI : MonoBehaviour
 
         FaceTowards(sees ? player.transform.position : lastKnownPosition, 1f);
 
-        if (!sees && thrower != null && Time.time >= staggerUntil && thrower.TryThrow(lastKnownPosition, Time.time - lastSeenTime, All))
-            staggerUntil = Time.time + 0.7f;
+        if (thrower != null && Time.time >= staggerUntil)
+        {
+            Vector3 target = lastKnownPosition;
+            if (sees) target = player.transform.position + Vector3.ProjectOnPlane(player.Velocity, Vector3.up) * 0.6f;
+            if (thrower.TryThrow(target, !sees, Time.time - lastSeenTime, All)) staggerUntil = Time.time + 0.7f;
+        }
 
         switch (data.combatStyle)
         {
@@ -427,6 +456,7 @@ public class EnemyAI : MonoBehaviour
             {
                 telegraphing = true;
                 telegraphEndTime = Time.time + data.telegraphTime;
+                trackedAimPoint = player.AimPoint;
                 if (glint != null) glint.Show(data.telegraphTime);
             }
             else if (weapon.NeedsReload)
@@ -436,11 +466,11 @@ public class EnemyAI : MonoBehaviour
             return;
         }
 
+        if (sees) trackedAimPoint = Vector3.MoveTowards(trackedAimPoint, player.AimPoint, data.aimTrackingSpeed * Time.deltaTime);
         if (Time.time < telegraphEndTime) return;
 
         CancelTelegraph();
-        Vector3 target = sees ? player.AimPoint : lastAimPoint;
-        weapon.TryFire(target, data.baseSpread);
+        weapon.TryFire(trackedAimPoint, data.baseSpread);
     }
 
     private void UpdateCoverCycle(PlayerTarget player, bool sees)

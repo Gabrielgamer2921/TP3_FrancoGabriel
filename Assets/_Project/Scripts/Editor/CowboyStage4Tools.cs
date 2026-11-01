@@ -102,6 +102,8 @@ public static class CowboyStage4Tools
         if (collider.GetComponentInParent<EnemyAI>() != null) return false;
         if (collider.GetComponentInParent<Pickup>() != null) return false;
         if (collider.GetComponentInParent<AlarmBell>() != null) return false;
+        if (collider.GetComponentInParent<LockedDoor>() != null) return false;
+        if (collider.GetComponentInParent<DestructibleBarrier>() != null) return false;
         if (collider.name.StartsWith("Torre")) return false;
 
         Bounds bounds = collider.bounds;

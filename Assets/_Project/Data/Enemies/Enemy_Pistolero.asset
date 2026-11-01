@@ -19,42 +19,59 @@ MonoBehaviour:
   corpseLifetime: 12
   deathImpulse: 4
   patrolSpeed: 2
-  chaseSpeed: 4.8
+  chaseSpeed: 3.5
   turnSpeed: 360
   patrolWaitTime: 2
-  viewDistance: 28
+  viewDistance: 14
   viewAngle: 110
   closeAwarenessRange: 2.5
   detectionTime: 0.7
   suspicionThreshold: 0.35
   awarenessDecay: 0.25
-  alertAllyRadius: 20
+  alertAllyRadius: 12
   memoryTime: 5
   searchDuration: 10
   investigateDuration: 5
   damage: 8
-  timeBetweenShots: 0.55
+  timeBetweenShots: 1
   magazineSize: 6
-  reloadTime: 2.2
+  reloadTime: 2.5
   attackRange: 22
   bulletSpeed: 110
   shotNoiseRadius: 30
+  pelletsPerShot: 1
+  pelletSpread: 0
+  falloffStartDistance: 1000
+  falloffEndDistance: 1000
+  minFalloffMultiplier: 1
   baseSpread: 3.5
   spreadPerMeter: 0.08
   movingTargetSpread: 2.5
-  movingShooterSpread: 1.5
+  movingShooterSpread: 3
   aimSettleTime: 1.2
   preferredMinDistance: 5
-  preferredMaxDistance: 11
-  repositionIntervalMin: 2
-  repositionIntervalMax: 3.5
+  preferredMaxDistance: 9
+  repositionIntervalMin: 5
+  repositionIntervalMax: 7
   usesCover: 1
-  coverChance: 0.4
-  coverSearchRadius: 12
-  coverStayTime: 1.2
-  peekTime: 2
+  coverChance: 0.85
+  coverSearchRadius: 8
+  coverStayTime: 2
+  peekTime: 2.5
   canRingAlarm: 1
   alarmSearchRadius: 40
+  throwable: {fileID: 0}
+  dynamiteCount: 0
+  dynamiteCooldown: 6
+  hiddenTimeBeforeThrow: 3
+  dynamiteLevelMin: 5
+  dynamiteLevelMax: 7
+  dynamiteRollInterval: 5
+  hiddenLevelBonus: 4
+  logDynamiteRolls: 1
+  dynamiteMinDistance: 6
+  dynamiteMaxDistance: 22
+  fuseAfterLanding: 0.8
   telegraphTime: 1.5
   idleSweepAngle: 40
   loot:

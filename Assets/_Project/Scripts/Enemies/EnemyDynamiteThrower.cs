@@ -7,26 +7,45 @@ public class EnemyDynamiteThrower : MonoBehaviour
     private Transform hand;
     private int remaining;
     private float nextThrowTime;
+    private float nextRollTime;
 
     public int Remaining => remaining;
+    public int Level { get; private set; }
+    public int LastRoll { get; private set; }
 
     public void Initialize(EnemyDataSO data, Transform hand)
     {
         this.data = data;
         this.hand = hand;
         remaining = data.dynamiteCount;
-        nextThrowTime = Time.time + data.dynamiteCooldown * 0.5f;
+        Level = Random.Range(Mathf.Min(data.dynamiteLevelMin, data.dynamiteLevelMax), Mathf.Max(data.dynamiteLevelMin, data.dynamiteLevelMax) + 1);
+        nextRollTime = Time.time + data.dynamiteRollInterval;
     }
 
-    public bool TryThrow(Vector3 target, float hiddenTime, IReadOnlyList<EnemyAI> allies)
+    public bool TryThrow(Vector3 target, bool playerHidden, float hiddenTime, IReadOnlyList<EnemyAI> allies)
     {
         if (data == null || data.throwable == null || remaining <= 0) return false;
-        if (Time.time < nextThrowTime || hiddenTime < data.hiddenTimeBeforeThrow) return false;
+        if (Time.time < nextRollTime || Time.time < nextThrowTime) return false;
 
         Vector3 flat = target - transform.position;
         flat.y = 0f;
         float distance = flat.magnitude;
         if (distance < data.dynamiteMinDistance || distance > data.dynamiteMaxDistance) return false;
+
+        nextRollTime = Time.time + data.dynamiteRollInterval * Random.Range(0.8f, 1.2f);
+
+        bool hiding = playerHidden && hiddenTime >= data.hiddenTimeBeforeThrow;
+        int effectiveLevel = Mathf.Min(20, Level + (hiding ? data.hiddenLevelBonus : 0));
+        LastRoll = Random.Range(1, 21);
+        bool success = LastRoll <= effectiveLevel;
+
+        if (data.logDynamiteRolls)
+        {
+            string result = success ? "¡LANZA DINAMITA!" : "no lanza";
+            Debug.Log($"{name} tiró d20: {LastRoll} (necesita {effectiveLevel} o menos{(hiding ? ", bonus por escondida" : "")}) → {result}");
+        }
+
+        if (!success) return false;
 
         foreach (EnemyAI ally in allies)
         {

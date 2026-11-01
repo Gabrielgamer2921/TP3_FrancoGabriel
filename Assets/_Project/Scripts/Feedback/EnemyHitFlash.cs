@@ -12,6 +12,7 @@ public class EnemyHitFlash : MonoBehaviour
 
     private readonly List<MeshRenderer> renderers = new List<MeshRenderer>();
     private readonly List<Color> originalColors = new List<Color>();
+    private readonly List<Color> baseColors = new List<Color>();
     private MaterialPropertyBlock block;
     private float flashUntil;
     private bool flashing;
@@ -25,6 +26,7 @@ public class EnemyHitFlash : MonoBehaviour
             if (material == null || !material.HasProperty(BaseColorId)) continue;
             renderers.Add(meshRenderer);
             originalColors.Add(material.GetColor(BaseColorId));
+            baseColors.Add(material.GetColor(BaseColorId));
         }
     }
 
@@ -43,6 +45,15 @@ public class EnemyHitFlash : MonoBehaviour
         if (!flashing || Time.time < flashUntil) return;
         flashing = false;
         for (int i = 0; i < renderers.Count; i++) Apply(renderers[i], originalColors[i]);
+    }
+
+    public void SetTint(Color tint, float strength)
+    {
+        for (int i = 0; i < renderers.Count; i++)
+        {
+            originalColors[i] = Color.Lerp(baseColors[i], tint, strength);
+            Apply(renderers[i], originalColors[i]);
+        }
     }
 
     private void SetColor(Color color)

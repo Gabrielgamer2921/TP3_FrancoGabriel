@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a3a35cb4a8e6ed4c864cd3eb90068d8, type: 3}
+  m_Name: Enemy_DirtyHolliday
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
+  displayName: Dirty Holliday
+  combatStyle: 0
+  maxHealth: 500
+  staggerTime: 0.1
+  corpseLifetime: 60
+  deathImpulse: 6
+  patrolSpeed: 2
+  chaseSpeed: 4
+  turnSpeed: 360
+  patrolWaitTime: 2
+  viewDistance: 45
+  viewAngle: 360
+  closeAwarenessRange: 2.5
+  detectionTime: 0.7
+  suspicionThreshold: 0.35
+  awarenessDecay: 0.25
+  alertAllyRadius: 20
+  memoryTime: 30
+  searchDuration: 120
+  investigateDuration: 5
+  damage: 9
+  timeBetweenShots: 0.4
+  magazineSize: 2
+  reloadTime: 2.5
+  attackRange: 20
+  bulletSpeed: 90
+  shotNoiseRadius: 30
+  pelletsPerShot: 8
+  pelletSpread: 4
+  falloffStartDistance: 8
+  falloffEndDistance: 18
+  minFalloffMultiplier: 0.1
+  baseSpread: 1
+  spreadPerMeter: 0
+  movingTargetSpread: 2.5
+  movingShooterSpread: 1.5
+  aimSettleTime: 1.2
+  preferredMinDistance: 3
+  preferredMaxDistance: 8
+  repositionIntervalMin: 1.5
+  repositionIntervalMax: 2.5
+  usesCover: 1
+  coverChance: 0.2
+  coverSearchRadius: 12
+  coverStayTime: 1.2
+  peekTime: 2
+  canRingAlarm: 0
+  alarmSearchRadius: 40
+  throwable: {fileID: 0}
+  dynamiteCount: 0
+  dynamiteCooldown: 6
+  hiddenTimeBeforeThrow: 3
+  dynamiteLevelMin: 5
+  dynamiteLevelMax: 7
+  dynamiteRollInterval: 5
+  hiddenLevelBonus: 4
+  logDynamiteRolls: 1
+  dynamiteMinDistance: 6
+  dynamiteMaxDistance: 22
+  fuseAfterLanding: 0.8
+  telegraphTime: 1.5
+  idleSweepAngle: 40
+  loot: []

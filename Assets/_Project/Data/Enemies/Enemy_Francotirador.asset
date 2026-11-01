@@ -22,24 +22,29 @@ MonoBehaviour:
   chaseSpeed: 4.8
   turnSpeed: 360
   patrolWaitTime: 2
-  viewDistance: 60
+  viewDistance: 30
   viewAngle: 90
   closeAwarenessRange: 2.5
   detectionTime: 1.2
   suspicionThreshold: 0.35
   awarenessDecay: 0.25
-  alertAllyRadius: 20
+  alertAllyRadius: 12
   memoryTime: 8
   searchDuration: 10
   investigateDuration: 5
-  damage: 30
+  damage: 20
   timeBetweenShots: 5
   magazineSize: 1
   reloadTime: 3.5
-  attackRange: 70
+  attackRange: 35
   bulletSpeed: 200
   shotNoiseRadius: 30
-  baseSpread: 0.4
+  pelletsPerShot: 1
+  pelletSpread: 0
+  falloffStartDistance: 1000
+  falloffEndDistance: 1000
+  minFalloffMultiplier: 1
+  baseSpread: 1.2
   spreadPerMeter: 0.01
   movingTargetSpread: 2.5
   movingShooterSpread: 1.5
@@ -55,7 +60,19 @@ MonoBehaviour:
   peekTime: 2
   canRingAlarm: 0
   alarmSearchRadius: 40
-  telegraphTime: 1.5
+  throwable: {fileID: 0}
+  dynamiteCount: 0
+  dynamiteCooldown: 6
+  hiddenTimeBeforeThrow: 3
+  dynamiteLevelMin: 5
+  dynamiteLevelMax: 7
+  dynamiteRollInterval: 5
+  hiddenLevelBonus: 4
+  logDynamiteRolls: 1
+  dynamiteMinDistance: 6
+  dynamiteMaxDistance: 22
+  fuseAfterLanding: 0.8
+  telegraphTime: 2
   idleSweepAngle: 40
   loot:
   - prefab: {fileID: 4736618224659184242, guid: 290b87c84493cdd48bfbce9b9f4b483f, type: 3}
