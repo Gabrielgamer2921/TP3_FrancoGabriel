@@ -4,6 +4,16 @@ public class HitscanWeapon : Weapon
 {
     protected override void Shoot(Vector3 origin, Vector3 direction)
     {
+        int pellets = Mathf.Max(1, data.pelletsPerShot);
+        for (int i = 0; i < pellets; i++)
+        {
+            Vector3 pelletDirection = pellets > 1 ? ApplySpread(direction, data.pelletSpread) : direction;
+            FirePellet(origin, pelletDirection);
+        }
+    }
+
+    private void FirePellet(Vector3 origin, Vector3 direction)
+    {
         Vector3 start = muzzle != null ? muzzle.position : origin;
         bool hasHit = Physics.Raycast(origin, direction, out RaycastHit hit, data.range, data.hitMask, QueryTriggerInteraction.Ignore);
         Vector3 end = hasHit ? hit.point : origin + direction * data.range;

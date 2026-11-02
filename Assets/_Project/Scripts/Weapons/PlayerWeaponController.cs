@@ -10,6 +10,7 @@ public class PlayerWeaponController : MonoBehaviour
     [SerializeField] private PlayerAmmoInventory ammo;
     [SerializeField] private Camera playerCamera;
     [SerializeField] private List<Weapon> weapons = new List<Weapon>();
+    [SerializeField] private List<Weapon> lockedWeapons = new List<Weapon>();
     [SerializeField] private int startingWeaponIndex;
     [SerializeField] private float sprintBlockAfterFire = 0.4f;
 
@@ -29,6 +30,7 @@ public class PlayerWeaponController : MonoBehaviour
     public float CurrentSpread { get; private set; }
 
     public event Action<Weapon> WeaponChanged;
+    public event Action<Weapon> WeaponUnlocked;
 
     private void Awake()
     {
@@ -38,6 +40,27 @@ public class PlayerWeaponController : MonoBehaviour
             ammo.Register(weapon.Data.ammoType);
             weapon.gameObject.SetActive(false);
         }
+
+        foreach (Weapon weapon in lockedWeapons)
+        {
+            if (weapon == null) continue;
+            weapon.Initialize(gameObject, playerCamera, ammo, look);
+            weapon.gameObject.SetActive(false);
+        }
+    }
+
+    public bool Unlock(WeaponDataSO data)
+    {
+        Weapon weapon = lockedWeapons.Find(w => w != null && w.Data == data);
+        if (weapon == null || weapons.Contains(weapon)) return false;
+
+        lockedWeapons.Remove(weapon);
+        weapons.Add(weapon);
+        ammo.Register(weapon.Data.ammoType);
+        busyUntil = 0f;
+        if (!IsHolstered) Equip(weapons.Count - 1);
+        WeaponUnlocked?.Invoke(weapon);
+        return true;
     }
 
     private void Start()

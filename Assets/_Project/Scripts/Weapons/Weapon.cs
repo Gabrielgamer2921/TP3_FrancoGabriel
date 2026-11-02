@@ -175,7 +175,7 @@ public abstract class Weapon : MonoBehaviour
 
     protected void RaiseShotTraced(Vector3 from, Vector3 to) => ShotTraced?.Invoke(from, to);
 
-    private Vector3 ApplySpread(Vector3 forward, float spreadAngle)
+    protected Vector3 ApplySpread(Vector3 forward, float spreadAngle)
     {
         if (spreadAngle <= 0f) return forward;
         Vector2 offset = Random.insideUnitCircle * Mathf.Tan(spreadAngle * Mathf.Deg2Rad);

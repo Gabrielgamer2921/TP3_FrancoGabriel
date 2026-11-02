@@ -173,15 +173,15 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 50
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 02fe31cbce6f1534fbd70caa1195dab7, type: 3}
   m_Color: {r: 1, g: 0.75, b: 0.35, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.28, y: 1.28}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
 --- !u!108 &3409736862861121957
 Light:
@@ -702,6 +702,7 @@ MonoBehaviour:
   glint: {fileID: 0}
   standingHeight: 1.8
   crouchHeight: 1.1
+  headClearance: 0.38
 --- !u!114 &2751381913299917328
 MonoBehaviour:
   m_ObjectHideFlags: 0

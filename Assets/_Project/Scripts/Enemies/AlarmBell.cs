@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AlarmBell : MonoBehaviour
+public class AlarmBell : MonoBehaviour, IResettable
 {
     [SerializeField] private Transform ringPoint;
     [SerializeField] private Transform bellVisual;
@@ -49,6 +49,13 @@ public class AlarmBell : MonoBehaviour
     public void Release(EnemyAI enemy)
     {
         if (Claimant == enemy) Claimant = null;
+    }
+
+    public void ResetState()
+    {
+        StopAllCoroutines();
+        IsRung = false;
+        Claimant = null;
     }
 
     public void Ring()

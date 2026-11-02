@@ -9,6 +9,8 @@ public class KeyCarrier : MonoBehaviour
     private Health health;
 
     private void Awake() => health = GetComponent<Health>();
+
+    public void SetKey(GameObject prefab) => keyPrefab = prefab;
     private void OnEnable() => health.Died += OnDied;
     private void OnDisable() => health.Died -= OnDied;
 

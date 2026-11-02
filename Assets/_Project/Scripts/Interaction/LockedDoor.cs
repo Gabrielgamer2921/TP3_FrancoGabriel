@@ -86,6 +86,16 @@ public class LockedDoor : MonoBehaviour, IInteractable
         Closed?.Invoke();
     }
 
+    public void CloseUnlocked()
+    {
+        IsOpen = false;
+        sealedShut = false;
+        locked = false;
+        targetAngle = 0f;
+        if (obstacle != null) obstacle.enabled = true;
+        Closed?.Invoke();
+    }
+
     public void Unseal()
     {
         sealedShut = false;

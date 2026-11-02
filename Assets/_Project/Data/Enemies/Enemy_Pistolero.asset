@@ -73,9 +73,12 @@ MonoBehaviour:
   dynamiteMaxDistance: 22
   fuseAfterLanding: 0.8
   telegraphTime: 1.5
+  aimTrackingSpeed: 5
   idleSweepAngle: 40
   loot:
   - prefab: {fileID: 5618480141564402141, guid: d1edda5f5252b3d4a8f8a8287f3f6d5d, type: 3}
     chance: 0.6
   - prefab: {fileID: 5323804626037053704, guid: c8082acc0f927614aa476e28e9a9f50d, type: 3}
-    chance: 0.1
+    chance: 0.3
+  - prefab: {fileID: 4790178997750589967, guid: 655901e321c560e4a9980e29e888f4a5, type: 3}
+    chance: 0.25

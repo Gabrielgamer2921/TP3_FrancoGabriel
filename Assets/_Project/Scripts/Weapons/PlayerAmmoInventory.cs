@@ -15,6 +15,8 @@ public class PlayerAmmoInventory : MonoBehaviour
         Changed?.Invoke(type, reserves[type]);
     }
 
+    public bool IsRegistered(AmmoTypeSO type) => type != null && reserves.ContainsKey(type);
+
     public int GetReserve(AmmoTypeSO type)
     {
         return type != null && reserves.TryGetValue(type, out int amount) ? amount : 0;

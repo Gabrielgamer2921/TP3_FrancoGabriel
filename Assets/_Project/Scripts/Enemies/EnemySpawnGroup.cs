@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemySpawnGroup : MonoBehaviour
+public class EnemySpawnGroup : MonoBehaviour, IResettable
 {
     [Serializable]
     public class SpawnEntry
@@ -18,6 +18,7 @@ public class EnemySpawnGroup : MonoBehaviour
     [SerializeField] private bool armedOnStart;
     [SerializeField] private bool alertOnSpawn = true;
     [SerializeField] private float delayBetweenSpawns = 0.4f;
+    [SerializeField] private ZoneEncounter territoryZone;
 
     private readonly List<EnemyAI> spawned = new List<EnemyAI>();
     private bool armed;
@@ -61,6 +62,21 @@ public class EnemySpawnGroup : MonoBehaviour
         StartCoroutine(SpawnRoutine());
     }
 
+    public void ResetState()
+    {
+        StopAllCoroutines();
+        foreach (EnemyAI enemy in spawned)
+            if (enemy != null) Destroy(enemy.gameObject);
+        spawned.Clear();
+        activated = false;
+        finishedSpawning = false;
+        if (armed || armedOnStart)
+        {
+            armed = false;
+            Arm();
+        }
+    }
+
     private void OnZoneEntered()
     {
         if (armed) Activate();
@@ -76,6 +92,7 @@ public class EnemySpawnGroup : MonoBehaviour
             if (NavMesh.SamplePosition(position, out NavMeshHit hit, 3f, NavMesh.AllAreas)) position = hit.position;
 
             EnemyAI enemy = Instantiate(entry.prefab, position, entry.point.rotation);
+            if (territoryZone != null) enemy.SetTerritory(territoryZone.Territory, territoryZone.ZoneId);
             spawned.Add(enemy);
 
             PlayerTarget player = PlayerTarget.Instance;

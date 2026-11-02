@@ -56,9 +56,12 @@ public class EnemyAI : MonoBehaviour
     private bool engaged;
     private bool canRingAlarm;
     private bool isCrouched;
+    private bool hasTerritory;
+    private Bounds territory;
 
     public EnemyDataSO Data => data;
     public EnemyState State { get; private set; }
+    public int ZoneId { get; private set; } = -1;
     public bool IsDead => State == EnemyState.Dead;
     public float Awareness => perception.Awareness;
     public PatrolRoute PatrolRoute { get => patrolRoute; set => patrolRoute = value; }
@@ -181,6 +184,13 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    public void SetTerritory(Bounds bounds, int zoneId)
+    {
+        territory = bounds;
+        hasTerritory = true;
+        ZoneId = zoneId;
+    }
+
     public void ForgetPlayer()
     {
         if (IsDead) return;
@@ -256,6 +266,7 @@ public class EnemyAI : MonoBehaviour
             foreach (EnemyAI ally in All)
             {
                 if (ally == this || ally.IsDead) continue;
+                if (ZoneId >= 0 && ally.ZoneId >= 0 && ally.ZoneId != ZoneId) continue;
                 if (Vector3.Distance(ally.transform.position, transform.position) <= data.alertAllyRadius)
                     ally.AlertFromAlly(knownPosition, Random.Range(0.3f, 0.9f));
             }
@@ -681,6 +692,11 @@ public class EnemyAI : MonoBehaviour
     private void MoveTo(Vector3 destination)
     {
         if (!agent.enabled || !agent.isOnNavMesh) return;
+        if (hasTerritory && !territory.Contains(destination))
+        {
+            destination = territory.ClosestPoint(destination);
+            if (NavMesh.SamplePosition(destination, out NavMeshHit hit, 3f, NavMesh.AllAreas)) destination = hit.position;
+        }
         agent.isStopped = false;
         agent.SetDestination(destination);
     }
@@ -697,6 +713,12 @@ public class EnemyAI : MonoBehaviour
         if (IsDead || source == gameObject) return;
         if (State == EnemyState.Combat || State == EnemyState.RingAlarm) return;
         if (Vector3.Distance(position, transform.position) > radius) return;
+        if (hasTerritory)
+        {
+            Bounds hearing = territory;
+            hearing.Expand(16f);
+            if (!hearing.Contains(position)) return;
+        }
 
         PlayerTarget player = PlayerTarget.Instance;
         if (player == null || player.IsDead) return;

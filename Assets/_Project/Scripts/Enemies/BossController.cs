@@ -19,12 +19,16 @@ public class BossController : MonoBehaviour
     [SerializeField, Range(0f, 1f)] private float diabloTintStrength = 0.55f;
     [SerializeField] private float retreatSpeed = 7f;
     [SerializeField] private float returnDelay = 1.5f;
+    [SerializeField] private GameObject rewardPickup;
 
     private EnemyAI ai;
     private Health health;
     private NavMeshAgent agent;
     private EnemyHitFlash hitFlash;
     private float diabloStartHealth;
+    private EnemyDataSO duelData;
+    private Vector3 startPosition;
+    private Quaternion startRotation;
 
     public BossPhase Phase { get; private set; } = BossPhase.Waiting;
     public string BossName => bossName;
@@ -40,6 +44,9 @@ public class BossController : MonoBehaviour
         health = GetComponent<Health>();
         agent = GetComponent<NavMeshAgent>();
         hitFlash = GetComponent<EnemyHitFlash>();
+        duelData = ai.Data;
+        startPosition = transform.position;
+        startRotation = transform.rotation;
     }
 
     private void OnEnable()
@@ -128,11 +135,45 @@ public class BossController : MonoBehaviour
         WakeUp();
     }
 
-    public void OnPlayerRespawned()
+    public void ResetToWaiting()
     {
         if (health.IsDead) return;
-        if (Phase == BossPhase.Duel) health.Heal(health.Max - health.Current);
-        else if (Phase == BossPhase.Diablo && health.Current < diabloStartHealth) health.Heal(diabloStartHealth - health.Current);
+        StopAllCoroutines();
+
+        if (reinforcementWave != null) reinforcementWave.ResetState();
+        if (hideoutDoor != null) hideoutDoor.CloseAndSeal();
+        SetPresence(true);
+
+        ai.ForgetPlayer();
+        ai.enabled = false;
+        if (ai.Data != duelData) ai.ApplyData(duelData);
+        if (hitFlash != null) hitFlash.SetTint(diabloTint, 0f);
+
+        health.DamageTakenMultiplier = 1f;
+        health.Heal(health.Max - health.Current);
+        health.Invulnerable = true;
+
+        if (agent.isOnNavMesh) agent.Warp(startPosition);
+        else transform.position = startPosition;
+        transform.rotation = startRotation;
+        SetPhase(BossPhase.Waiting);
+    }
+
+    public void ResetDiablo()
+    {
+        if (health.IsDead) return;
+        StopAllCoroutines();
+
+        if (health.Current < diabloStartHealth) health.Heal(diabloStartHealth - health.Current);
+        ai.ForgetPlayer();
+        if (returnPoint != null && agent.isOnNavMesh) agent.Warp(returnPoint.position);
+        StartCoroutine(WakeAfter(1.5f));
+    }
+
+    private IEnumerator WakeAfter(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (Phase == BossPhase.Diablo && !health.IsDead) WakeUp();
     }
 
     private void SetPresence(bool present)
@@ -145,6 +186,8 @@ public class BossController : MonoBehaviour
     {
         StopAllCoroutines();
         SetPhase(BossPhase.Defeated);
+        if (rewardPickup != null)
+            Instantiate(rewardPickup, transform.position + transform.forward * 0.8f + Vector3.up * 0.1f, Quaternion.Euler(0f, transform.eulerAngles.y, 0f));
         Defeated?.Invoke();
     }
 

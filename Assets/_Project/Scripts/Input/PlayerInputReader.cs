@@ -8,7 +8,7 @@ public class PlayerInputReader : MonoBehaviour
     [SerializeField] private string mapName = "Player";
 
     private InputActionMap map;
-    private InputAction move, look, fire, aim, reload, jump, sprint, crouch, interact, melee, throwAction, bandage, weapon1, weapon2, switchWeapon, pause;
+    private InputAction move, look, fire, aim, reload, jump, sprint, crouch, interact, melee, throwAction, bandage, weapon1, weapon2, weapon3, switchWeapon, pause;
 
     public Vector2 Move => move.ReadValue<Vector2>();
     public Vector2 Look => look.ReadValue<Vector2>();
@@ -47,6 +47,7 @@ public class PlayerInputReader : MonoBehaviour
         bandage = map.FindAction("Bandage", true);
         weapon1 = map.FindAction("Weapon1", true);
         weapon2 = map.FindAction("Weapon2", true);
+        weapon3 = map.FindAction("Weapon3", false);
         switchWeapon = map.FindAction("SwitchWeapon", true);
         pause = map.FindAction("Pause", true);
     }
@@ -64,6 +65,7 @@ public class PlayerInputReader : MonoBehaviour
         bandage.performed += OnBandage;
         weapon1.performed += OnWeapon1;
         weapon2.performed += OnWeapon2;
+        if (weapon3 != null) weapon3.performed += OnWeapon3;
         switchWeapon.performed += OnSwitchWeapon;
         pause.performed += OnPause;
         map.Enable();
@@ -82,6 +84,7 @@ public class PlayerInputReader : MonoBehaviour
         bandage.performed -= OnBandage;
         weapon1.performed -= OnWeapon1;
         weapon2.performed -= OnWeapon2;
+        if (weapon3 != null) weapon3.performed -= OnWeapon3;
         switchWeapon.performed -= OnSwitchWeapon;
         pause.performed -= OnPause;
         map.Disable();
@@ -105,6 +108,7 @@ public class PlayerInputReader : MonoBehaviour
     private void OnBandage(InputAction.CallbackContext ctx) => BandagePressed?.Invoke();
     private void OnWeapon1(InputAction.CallbackContext ctx) => WeaponSlotPressed?.Invoke(0);
     private void OnWeapon2(InputAction.CallbackContext ctx) => WeaponSlotPressed?.Invoke(1);
+    private void OnWeapon3(InputAction.CallbackContext ctx) => WeaponSlotPressed?.Invoke(2);
     private void OnPause(InputAction.CallbackContext ctx) => PausePressed?.Invoke();
 
     private void OnSwitchWeapon(InputAction.CallbackContext ctx)

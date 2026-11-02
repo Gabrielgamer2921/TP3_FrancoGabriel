@@ -14,6 +14,10 @@ public class WeaponDataSO : ScriptableObject
     [Min(0f)] public float impactForce = 4f;
     public LayerMask hitMask = ~0;
 
+    [Header("Perdigones (escopetas)")]
+    [Min(1)] public int pelletsPerShot = 1;
+    [Min(0f)] public float pelletSpread;
+
     [Header("Ruido")]
     [Min(0f)] public float noiseRadius = 40f;
 

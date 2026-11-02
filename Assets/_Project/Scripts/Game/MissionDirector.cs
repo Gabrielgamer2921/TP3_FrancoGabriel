@@ -25,7 +25,9 @@ public class MissionDirector : MonoBehaviour
     [SerializeField] private List<EnemySpawnGroup> escapeGroups = new List<EnemySpawnGroup>();
     [SerializeField] private string courtyardKeyId = "llave_patio";
     [SerializeField] private Checkpoint bossCheckpoint;
+    [SerializeField] private Checkpoint diabloCheckpoint;
     [SerializeField] private Checkpoint escapeCheckpoint;
+    [SerializeField] private ZoneEncounter roadAmbush;
 
     [Header("Textos")]
     [SerializeField] private string breachText = "Volá el portón de Fort Mercer con dinamita";
@@ -34,9 +36,21 @@ public class MissionDirector : MonoBehaviour
     [SerializeField] private string bossText = "Matá a Dirty Holliday";
     [SerializeField] private string waveText = "Eliminá a los hombres de Holliday";
     [SerializeField] private string diabloText = "¡Holliday volvió! Terminá con él";
-    [SerializeField] private string escapeText = "Escapá del fuerte por el portón";
+    [SerializeField] private string escapeText = "Agarrá la escopeta de Holliday y escapá del fuerte por el portón";
+    [SerializeField] private string retryBossText = "Volvé a abrir la puerta del patio y enfrentá a Holliday";
 
     private MissionPhase phase;
+
+    public bool IsBossFightActive => phase == MissionPhase.BossFight;
+    public Checkpoint BossEntranceCheckpoint => bossCheckpoint;
+    public Checkpoint DiabloCheckpoint => diabloCheckpoint;
+
+    public void ResetBossFight()
+    {
+        SetPhase(MissionPhase.OpenCourtyard, retryBossText);
+        if (courtyardDoor != null) courtyardDoor.CloseUnlocked();
+        if (courtyardZone != null) courtyardZone.ResetTrigger();
+    }
     private float nextGateHintTime;
 
     private void Start()
@@ -122,13 +136,22 @@ public class MissionDirector : MonoBehaviour
     {
         if (phase != MissionPhase.BossFight) return;
         if (bossPhase == BossPhase.Retreat) objectives.Show(waveText);
-        else if (bossPhase == BossPhase.Diablo) objectives.Show(diabloText);
+        else if (bossPhase == BossPhase.Diablo)
+        {
+            objectives.Show(diabloText);
+            if (CheckpointManager.Instance != null && diabloCheckpoint != null) CheckpointManager.Instance.Activate(diabloCheckpoint, false);
+        }
     }
 
     private void OnBossDefeated()
     {
         SetPhase(MissionPhase.Escape, escapeText);
-        if (CheckpointManager.Instance != null && escapeCheckpoint != null) CheckpointManager.Instance.Activate(escapeCheckpoint, false);
+        if (CheckpointManager.Instance != null)
+        {
+            CheckpointManager.Instance.IsEscaping = true;
+            if (escapeCheckpoint != null) CheckpointManager.Instance.Activate(escapeCheckpoint, false);
+        }
+        if (roadAmbush != null) roadAmbush.Activate();
         objectives.Hint("Dirty Holliday está muerto. Llegan refuerzos de la banda...", 4f);
 
         if (courtyardDoor != null)

@@ -10,6 +10,8 @@ public class CheckpointManager : MonoBehaviour
     [SerializeField] private PlayerBandages bandages;
     [SerializeField] private PlayerThrowController thrower;
     [SerializeField] private BossController boss;
+    [SerializeField] private MissionDirector director;
+    [SerializeField] private List<MonoBehaviour> resetOnStartRespawn = new List<MonoBehaviour>();
 
     private readonly Dictionary<AmmoTypeSO, int> savedAmmo = new Dictionary<AmmoTypeSO, int>();
     private Checkpoint current;
@@ -20,6 +22,7 @@ public class CheckpointManager : MonoBehaviour
 
     public static CheckpointManager Instance { get; private set; }
     public Checkpoint Current => current;
+    public bool IsEscaping { get; set; }
 
     private void Awake()
     {
@@ -38,18 +41,45 @@ public class CheckpointManager : MonoBehaviour
         TakeSnapshot();
     }
 
-    public void Activate(Checkpoint checkpoint, bool announce)
+    public void Activate(Checkpoint checkpoint, bool fromZone)
     {
         if (checkpoint == null || checkpoint == current) return;
+        if (fromZone && checkpoint.ActiveDuring == Checkpoint.Phase.IngressOnly && IsEscaping) return;
+        if (fromZone && checkpoint.ActiveDuring == Checkpoint.Phase.EscapeOnly && !IsEscaping) return;
+
         current = checkpoint;
+        checkpoint.OnReached();
         TakeSnapshot();
-        if (announce && objectives != null) objectives.Hint($"Punto de control: {checkpoint.DisplayName}", 2.5f);
+        if (objectives != null) objectives.Hint($"Punto de control: {checkpoint.DisplayName}", 2.5f);
     }
 
     public void Respawn()
     {
         foreach (EnemyAI enemy in new List<EnemyAI>(EnemyAI.All)) enemy.ForgetPlayer();
-        if (boss != null) boss.OnPlayerRespawned();
+
+        if (director != null && director.IsBossFightActive && boss != null)
+        {
+            if (boss.Phase == BossPhase.Diablo && director.DiabloCheckpoint != null)
+            {
+                boss.ResetDiablo();
+                current = director.DiabloCheckpoint;
+            }
+            else
+            {
+                boss.ResetToWaiting();
+                director.ResetBossFight();
+                if (director.BossEntranceCheckpoint != null) current = director.BossEntranceCheckpoint;
+            }
+        }
+        else if (current != null)
+        {
+            current.ResetEncounters();
+        }
+        else
+        {
+            foreach (MonoBehaviour target in resetOnStartRespawn)
+                if (target is IResettable resettable) resettable.ResetState();
+        }
 
         Vector3 position = current != null ? current.SpawnPosition : startPosition;
         Quaternion rotation = current != null ? current.SpawnRotation : startRotation;

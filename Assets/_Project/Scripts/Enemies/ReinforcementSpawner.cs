@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
 
-public class ReinforcementSpawner : MonoBehaviour
+public class ReinforcementSpawner : MonoBehaviour, IResettable
 {
     [Serializable]
     public class Wave
@@ -19,6 +19,7 @@ public class ReinforcementSpawner : MonoBehaviour
     [SerializeField] private Transform[] spawnPoints;
     [SerializeField] private List<Wave> waves = new List<Wave>();
     [SerializeField] private int maxAlive = 6;
+    [SerializeField] private ZoneEncounter territoryZone;
 
     private readonly List<EnemyAI> spawned = new List<EnemyAI>();
     private bool started;
@@ -68,11 +69,21 @@ public class ReinforcementSpawner : MonoBehaviour
         if (NavMesh.SamplePosition(position, out NavMeshHit hit, 3f, NavMesh.AllAreas)) position = hit.position;
 
         EnemyAI enemy = Instantiate(prefab, position, point.rotation);
+        if (territoryZone != null) enemy.SetTerritory(territoryZone.Territory, territoryZone.ZoneId);
         spawned.Add(enemy);
 
         PlayerTarget player = PlayerTarget.Instance;
         if (player != null) enemy.AlertAsReinforcement(player.transform.position);
         EnemySpawned?.Invoke(enemy);
+    }
+
+    public void ResetState()
+    {
+        StopAllCoroutines();
+        foreach (EnemyAI enemy in spawned)
+            if (enemy != null) Destroy(enemy.gameObject);
+        spawned.Clear();
+        started = false;
     }
 
     private int CountAlive()
