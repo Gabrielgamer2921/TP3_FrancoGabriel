@@ -19,6 +19,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private SniperGlint glint;
     [SerializeField] private float standingHeight = 1.8f;
     [SerializeField] private float crouchHeight = 1.1f;
+    [SerializeField] private float headClearance = 0.38f;
 
     private NavMeshAgent agent;
     private Health health;
@@ -64,6 +65,7 @@ public class EnemyAI : MonoBehaviour
 
     public event Action<EnemyState> StateChanged;
     public event Action<EnemyAI> Killed;
+    public event Action DynamiteThrown;
 
     private void Awake()
     {
@@ -81,6 +83,7 @@ public class EnemyAI : MonoBehaviour
         canRingAlarm = data.canRingAlarm && data.combatStyle != EnemyCombatStyle.Sniper;
 
         if (rb != null) rb.isKinematic = true;
+        ApplyBodyHeight(standingHeight);
 
         if (data.throwable != null && data.dynamiteCount > 0)
         {
@@ -176,6 +179,16 @@ public class EnemyAI : MonoBehaviour
         {
             thrower = null;
         }
+    }
+
+    public void ForgetPlayer()
+    {
+        if (IsDead) return;
+        StopAllCoroutines();
+        perception.SetAwareness(0f);
+        lastSeenTime = float.NegativeInfinity;
+        if (enabled) EnterPatrol();
+        else SetEngaged(false);
     }
 
     public void AlertFromAlly(Vector3 position, float delay)
@@ -391,7 +404,11 @@ public class EnemyAI : MonoBehaviour
         {
             Vector3 target = lastKnownPosition;
             if (sees) target = player.transform.position + Vector3.ProjectOnPlane(player.Velocity, Vector3.up) * 0.6f;
-            if (thrower.TryThrow(target, !sees, Time.time - lastSeenTime, All)) staggerUntil = Time.time + 0.7f;
+            if (thrower.TryThrow(target, !sees, Time.time - lastSeenTime, All))
+            {
+                staggerUntil = Time.time + 0.7f;
+                DynamiteThrown?.Invoke();
+            }
         }
 
         switch (data.combatStyle)
@@ -624,12 +641,16 @@ public class EnemyAI : MonoBehaviour
         isCrouched = crouched;
 
         float height = crouched ? crouchHeight : standingHeight;
-        if (body != null)
-        {
-            body.height = height;
-            body.center = new Vector3(0f, height * 0.5f, 0f);
-        }
+        ApplyBodyHeight(height);
         if (visualRoot != null) visualRoot.localScale = new Vector3(1f, height / standingHeight, 1f);
+    }
+
+    private void ApplyBodyHeight(float height)
+    {
+        if (body == null) return;
+        float bodyHeight = Mathf.Max(body.radius * 2f, height - headClearance * (height / standingHeight));
+        body.height = bodyHeight;
+        body.center = new Vector3(0f, bodyHeight * 0.5f, 0f);
     }
 
     private void SetEngaged(bool value)

@@ -7,4 +7,6 @@ public struct WeaponHit
     public Collider collider;
     public bool damaged;
     public bool critical;
+    public bool killed;
+    public bool fromPlayer;
 }

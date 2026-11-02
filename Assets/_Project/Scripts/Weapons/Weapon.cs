@@ -34,6 +34,7 @@ public abstract class Weapon : MonoBehaviour
     public event Action RoundInserted;
     public event Action ReloadFinished;
     public event Action<WeaponHit> Hit;
+    public static event Action<WeaponHit> AnyHit;
     public event Action<Vector3, Vector3> ShotTraced;
 
     public void Initialize(GameObject owner, Camera aimCamera, PlayerAmmoInventory ammo, PlayerLook look)
@@ -122,6 +123,13 @@ public abstract class Weapon : MonoBehaviour
         }
     }
 
+    public void RefillMagazine()
+    {
+        StopReloadImmediate();
+        CurrentMagazine = data.magazineSize;
+        AmmoChanged?.Invoke();
+    }
+
     public void AddToMagazine(int amount)
     {
         CurrentMagazine = Mathf.Clamp(CurrentMagazine + amount, 0, data.magazineSize);
@@ -143,19 +151,26 @@ public abstract class Weapon : MonoBehaviour
         float falloff = data.damageFalloff.Evaluate(Mathf.Clamp01(distance / data.range));
         WeaponHit result = new WeaponHit { point = point, normal = normal, collider = hitCollider };
 
+        result.fromPlayer = true;
         IDamageable damageable = hitCollider.GetComponentInParent<IDamageable>();
         if (damageable != null)
         {
+            Health targetHealth = hitCollider.GetComponentInParent<Health>();
+            bool wasAlive = targetHealth == null || !targetHealth.IsDead;
+
             damageable.TakeDamage(new DamageInfo(data.damage * falloff, point, direction, owner, DamageType.Bullet));
-            result.damaged = true;
+
+            result.damaged = wasAlive && targetHealth != null;
+            result.killed = wasAlive && targetHealth != null && targetHealth.IsDead;
             Hitbox hitbox = hitCollider.GetComponent<Hitbox>();
-            result.critical = hitbox != null && hitbox.IsCritical;
+            result.critical = result.damaged && hitbox != null && hitbox.IsCritical;
         }
 
         Rigidbody body = hitCollider.attachedRigidbody;
         if (body != null && !body.isKinematic) body.AddForceAtPosition(direction * data.impactForce, point, ForceMode.Impulse);
 
         Hit?.Invoke(result);
+        AnyHit?.Invoke(result);
     }
 
     protected void RaiseShotTraced(Vector3 from, Vector3 to) => ShotTraced?.Invoke(from, to);

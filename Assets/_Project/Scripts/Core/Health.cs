@@ -18,6 +18,7 @@ public class Health : MonoBehaviour, IDamageable
     public event Action<float> Healed;
     public event Action<float, float> Changed;
     public event Action<DamageInfo> Died;
+    public event Action Revived;
 
     protected virtual void Awake()
     {
@@ -51,6 +52,14 @@ public class Health : MonoBehaviour, IDamageable
         Current = Mathf.Min(maxHealth, Current + amount);
         Healed?.Invoke(Current - previous);
         Changed?.Invoke(Current, maxHealth);
+    }
+
+    public void Revive(float amount)
+    {
+        IsDead = false;
+        Current = Mathf.Clamp(amount, 1f, maxHealth);
+        Changed?.Invoke(Current, maxHealth);
+        Revived?.Invoke();
     }
 
     private void Die(DamageInfo info)

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b5911d2bbe9df14696287776ecd1163, type: 3}
+  m_Name: Impacto_Tierra
+  m_EditorClassIdentifier: Assembly-CSharp::SoundSO
+  clips:
+  - {fileID: 8300000, guid: 2c7ba5659948d494baefb17bb015d428, type: 3}
+  - {fileID: 8300000, guid: 7aaf4f2d3c0aff0418556205381806ac, type: 3}
+  - {fileID: 8300000, guid: 4d4e6056669678e4a929bf8975cf6162, type: 3}
+  volume: 0.5
+  pitchMin: 0.85
+  pitchMax: 1.15
+  spatialBlend: 1
+  minDistance: 2
+  maxDistance: 30
+  cooldown: 0

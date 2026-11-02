@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6c838ebfbe183944a4c23d3701eb520, type: 3}
+  m_Name: Voz_Pistolero
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyVoiceSO
+  spotted: []
+  chasing: []
+  attacking: []
+  reloading: []
+  throwingDynamite: []
+  hurt: []
+  death: []
+  searching: []
+  ringingAlarm: []
+  playerKilled: []
+  bossFightStart: []
+  bossRetreat: []
+  bossDiablo: []
+  volume: 0.9
+  basePitch: 1
+  pitchVariationPerEnemy: 0.08
+  maxDistance: 40
+  attackingChance: 0.2
+  hurtChance: 0.5
+  reloadingChance: 0.7
+  playerKilledChance: 0.6
+  chasingIntervalMin: 6
+  chasingIntervalMax: 11
+  cooldownPerEnemy: 1.8
+  minGapBetweenAnyEnemies: 0.5

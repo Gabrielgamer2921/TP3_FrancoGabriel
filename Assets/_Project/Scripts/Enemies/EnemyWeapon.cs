@@ -20,6 +20,7 @@ public class EnemyWeapon : MonoBehaviour
     public Transform Muzzle => muzzle;
 
     public event Action Fired;
+    public static event Action<WeaponHit> AnyHit;
     public event Action ReloadStarted;
 
     public void Initialize(EnemyDataSO data)
@@ -72,7 +73,7 @@ public class EnemyWeapon : MonoBehaviour
 
         if (visualBulletPrefab == null)
         {
-            if (hasHit) ApplyHit(hit.collider, hit.point, direction, hit.distance);
+            if (hasHit) ApplyHit(hit.collider, hit.point, hit.normal, direction, hit.distance);
             return;
         }
 
@@ -81,8 +82,9 @@ public class EnemyWeapon : MonoBehaviour
         {
             Collider hitCollider = hit.collider;
             Vector3 point = hit.point;
+            Vector3 normal = hit.normal;
             float distance = hit.distance;
-            bullet.Launch(origin, end, data.bulletSpeed, () => ApplyHit(hitCollider, point, direction, distance));
+            bullet.Launch(origin, end, data.bulletSpeed, () => ApplyHit(hitCollider, point, normal, direction, distance));
         }
         else
         {
@@ -90,10 +92,12 @@ public class EnemyWeapon : MonoBehaviour
         }
     }
 
-    private void ApplyHit(Collider hitCollider, Vector3 point, Vector3 direction, float distance)
+    private void ApplyHit(Collider hitCollider, Vector3 point, Vector3 normal, Vector3 direction, float distance)
     {
         if (hitCollider == null) return;
         if (hitCollider.GetComponentInParent<EnemyAI>() != null) return;
+
+        WeaponHit result = new WeaponHit { point = point, normal = normal, collider = hitCollider };
 
         float falloff = 1f;
         if (distance > data.falloffStartDistance)
@@ -103,10 +107,16 @@ public class EnemyWeapon : MonoBehaviour
         }
 
         IDamageable damageable = hitCollider.GetComponentInParent<IDamageable>();
-        damageable?.TakeDamage(new DamageInfo(data.damage * falloff, point, direction, gameObject, DamageType.Bullet));
+        if (damageable != null)
+        {
+            damageable.TakeDamage(new DamageInfo(data.damage * falloff, point, direction, gameObject, DamageType.Bullet));
+            result.damaged = true;
+        }
 
         Rigidbody body = hitCollider.attachedRigidbody;
         if (body != null && !body.isKinematic) body.AddForceAtPosition(direction * 3f, point, ForceMode.Impulse);
+
+        AnyHit?.Invoke(result);
     }
 
     private static Vector3 ApplySpread(Vector3 direction, float spread)

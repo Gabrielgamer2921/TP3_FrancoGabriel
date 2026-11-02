@@ -24,6 +24,8 @@ public class MissionDirector : MonoBehaviour
     [SerializeField] private PlayerZoneTrigger exitZone;
     [SerializeField] private List<EnemySpawnGroup> escapeGroups = new List<EnemySpawnGroup>();
     [SerializeField] private string courtyardKeyId = "llave_patio";
+    [SerializeField] private Checkpoint bossCheckpoint;
+    [SerializeField] private Checkpoint escapeCheckpoint;
 
     [Header("Textos")]
     [SerializeField] private string breachText = "Volá el portón de Fort Mercer con dinamita";
@@ -112,6 +114,7 @@ public class MissionDirector : MonoBehaviour
         SetPhase(MissionPhase.BossFight, bossText);
         if (courtyardDoor != null) courtyardDoor.CloseAndSeal();
         objectives.Hint("¡La puerta se cerró detrás tuyo!");
+        if (CheckpointManager.Instance != null && bossCheckpoint != null) CheckpointManager.Instance.Activate(bossCheckpoint, false);
         if (boss != null) boss.StartFight();
     }
 
@@ -125,6 +128,7 @@ public class MissionDirector : MonoBehaviour
     private void OnBossDefeated()
     {
         SetPhase(MissionPhase.Escape, escapeText);
+        if (CheckpointManager.Instance != null && escapeCheckpoint != null) CheckpointManager.Instance.Activate(escapeCheckpoint, false);
         objectives.Hint("Dirty Holliday está muerto. Llegan refuerzos de la banda...", 4f);
 
         if (courtyardDoor != null)

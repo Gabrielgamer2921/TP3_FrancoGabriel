@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b5911d2bbe9df14696287776ecd1163, type: 3}
+  m_Name: Enemigo_Rifle_Disparo
+  m_EditorClassIdentifier: Assembly-CSharp::SoundSO
+  clips:
+  - {fileID: 8300000, guid: 3d769f57a80298f48a594b84c089ff44, type: 3}
+  - {fileID: 8300000, guid: 80d561ae1457c2d4f8b58db3d17558e2, type: 3}
+  - {fileID: 8300000, guid: 908ea1097bbfc5f4a8bdc04d853df4cc, type: 3}
+  volume: 0.9
+  pitchMin: 0.9
+  pitchMax: 1.05
+  spatialBlend: 1
+  minDistance: 2
+  maxDistance: 100
+  cooldown: 0

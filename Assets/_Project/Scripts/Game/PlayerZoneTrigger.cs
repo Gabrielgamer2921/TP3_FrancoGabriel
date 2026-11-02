@@ -9,6 +9,12 @@ public class PlayerZoneTrigger : MonoBehaviour
 
     private bool triggered;
 
+    public bool TriggerOnce
+    {
+        get => triggerOnce;
+        set => triggerOnce = value;
+    }
+
     public bool PlayerInside { get; private set; }
 
     public event Action Entered;

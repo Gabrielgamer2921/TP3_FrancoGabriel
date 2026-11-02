@@ -32,7 +32,7 @@ MonoBehaviour:
   memoryTime: 30
   searchDuration: 120
   investigateDuration: 5
-  damage: 12.6
+  damage: 8.4
   timeBetweenShots: 0.3
   magazineSize: 2
   reloadTime: 1.8
@@ -73,5 +73,6 @@ MonoBehaviour:
   dynamiteMaxDistance: 20
   fuseAfterLanding: 0.8
   telegraphTime: 1.5
+  aimTrackingSpeed: 5
   idleSweepAngle: 40
   loot: []

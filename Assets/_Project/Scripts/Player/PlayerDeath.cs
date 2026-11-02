@@ -17,7 +17,11 @@ public class PlayerDeath : MonoBehaviour
     [SerializeField] private bool reloadSceneOnDeath = true;
     [SerializeField] private float reloadDelay = 4f;
 
+    private Vector3 pivotPosition;
+    private Coroutine fallRoutine;
+
     public event Action PlayerDied;
+    public event Action PlayerRevived;
 
     private void OnEnable()
     {
@@ -37,8 +41,31 @@ public class PlayerDeath : MonoBehaviour
         motor.enabled = false;
         look.enabled = false;
 
+        pivotPosition = cameraPivot.localPosition;
         PlayerDied?.Invoke();
-        StartCoroutine(FallRoutine());
+        fallRoutine = StartCoroutine(FallRoutine());
+    }
+
+    public void Revive(Vector3 position, Quaternion rotation)
+    {
+        if (fallRoutine != null) StopCoroutine(fallRoutine);
+        fallRoutine = null;
+
+        CharacterController controller = GetComponent<CharacterController>();
+        if (controller != null) controller.enabled = false;
+        transform.SetPositionAndRotation(position, Quaternion.Euler(0f, rotation.eulerAngles.y, 0f));
+        if (controller != null) controller.enabled = true;
+
+        cameraPivot.localPosition = pivotPosition;
+        cameraPivot.localRotation = Quaternion.identity;
+
+        health.Revive(health.Max);
+        motor.enabled = true;
+        look.enabled = true;
+        weapons.enabled = true;
+        weapons.SetHolstered(false);
+        input.SetGameplayEnabled(true);
+        PlayerRevived?.Invoke();
     }
 
     private IEnumerator FallRoutine()

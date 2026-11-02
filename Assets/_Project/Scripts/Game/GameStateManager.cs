@@ -8,6 +8,7 @@ public class GameStateManager : MonoBehaviour
     [SerializeField] private PlayerInputReader input;
     [SerializeField] private PlayerLook look;
     [SerializeField] private PlayerDeath playerDeath;
+    [SerializeField] private CheckpointManager checkpoints;
     [SerializeField] private GameObject pausePanel;
     [SerializeField] private GameObject victoryPanel;
     [SerializeField] private GameObject defeatPanel;
@@ -50,7 +51,7 @@ public class GameStateManager : MonoBehaviour
 
     public void TogglePause()
     {
-        if (IsGameOver) return;
+        if (IsGameOver || IntroSequence.IsPlaying) return;
         SetPaused(!IsPaused);
     }
 
@@ -95,6 +96,24 @@ public class GameStateManager : MonoBehaviour
         look.SetCursorLocked(false);
         Time.timeScale = 0f;
         if (panel != null) panel.SetActive(true);
+    }
+
+    public void RespawnAtCheckpoint()
+    {
+        if (checkpoints == null)
+        {
+            Restart();
+            return;
+        }
+
+        StopAllCoroutines();
+        IsGameOver = false;
+        if (defeatPanel != null) defeatPanel.SetActive(false);
+        Time.timeScale = 1f;
+        AudioListener.pause = false;
+        checkpoints.Respawn();
+        input.SetGameplayEnabled(true);
+        look.SetCursorLocked(true);
     }
 
     public void Restart()

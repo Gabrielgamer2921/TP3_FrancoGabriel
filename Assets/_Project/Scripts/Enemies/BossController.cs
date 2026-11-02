@@ -24,6 +24,7 @@ public class BossController : MonoBehaviour
     private Health health;
     private NavMeshAgent agent;
     private EnemyHitFlash hitFlash;
+    private float diabloStartHealth;
 
     public BossPhase Phase { get; private set; } = BossPhase.Waiting;
     public string BossName => bossName;
@@ -122,8 +123,16 @@ public class BossController : MonoBehaviour
         if (diabloHealthBonus > 0f) health.Heal(diabloHealthBonus);
         health.Invulnerable = false;
 
+        diabloStartHealth = health.Current;
         SetPhase(BossPhase.Diablo);
         WakeUp();
+    }
+
+    public void OnPlayerRespawned()
+    {
+        if (health.IsDead) return;
+        if (Phase == BossPhase.Duel) health.Heal(health.Max - health.Current);
+        else if (Phase == BossPhase.Diablo && health.Current < diabloStartHealth) health.Heal(diabloStartHealth - health.Current);
     }
 
     private void SetPresence(bool present)
