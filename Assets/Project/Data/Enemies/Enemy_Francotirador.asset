@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a3a35cb4a8e6ed4c864cd3eb90068d8, type: 3}
+  m_Name: Enemy_Francotirador
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
+  displayName: Francotirador
+  combatStyle: 2
+  maxHealth: 70
+  staggerTime: 0.25
+  corpseLifetime: 12
+  deathImpulse: 4
+  patrolSpeed: 0
+  chaseSpeed: 4.8
+  turnSpeed: 360
+  patrolWaitTime: 2
+  viewDistance: 30
+  viewAngle: 90
+  closeAwarenessRange: 2.5
+  detectionTime: 1.2
+  suspicionThreshold: 0.35
+  awarenessDecay: 0.25
+  alertAllyRadius: 12
+  memoryTime: 8
+  searchDuration: 10
+  investigateDuration: 5
+  damage: 20
+  timeBetweenShots: 5
+  magazineSize: 1
+  reloadTime: 3.5
+  attackRange: 35
+  bulletSpeed: 200
+  shotNoiseRadius: 30
+  pelletsPerShot: 1
+  pelletSpread: 0
+  falloffStartDistance: 1000
+  falloffEndDistance: 1000
+  minFalloffMultiplier: 1
+  baseSpread: 1.2
+  spreadPerMeter: 0.01
+  movingTargetSpread: 2.5
+  movingShooterSpread: 1.5
+  aimSettleTime: 1.2
+  preferredMinDistance: 5
+  preferredMaxDistance: 11
+  repositionIntervalMin: 2
+  repositionIntervalMax: 3.5
+  usesCover: 0
+  coverChance: 0.4
+  coverSearchRadius: 12
+  coverStayTime: 1.2
+  peekTime: 2
+  canRingAlarm: 0
+  alarmSearchRadius: 40
+  throwable: {fileID: 0}
+  dynamiteCount: 0
+  dynamiteCooldown: 6
+  hiddenTimeBeforeThrow: 3
+  dynamiteLevelMin: 5
+  dynamiteLevelMax: 7
+  dynamiteRollInterval: 5
+  hiddenLevelBonus: 4
+  logDynamiteRolls: 0
+  dynamiteMinDistance: 6
+  dynamiteMaxDistance: 22
+  fuseAfterLanding: 0.8
+  telegraphTime: 2
+  aimTrackingSpeed: 5
+  idleSweepAngle: 40
+  loot:
+  - prefab: {fileID: 4736618224659184242, guid: 290b87c84493cdd48bfbce9b9f4b483f, type: 3}
+    chance: 0.7
+  - prefab: {fileID: 5323804626037053704, guid: c8082acc0f927614aa476e28e9a9f50d, type: 3}
+    chance: 0.3
+  - prefab: {fileID: 4790178997750589967, guid: 655901e321c560e4a9980e29e888f4a5, type: 3}
+    chance: 0.15
