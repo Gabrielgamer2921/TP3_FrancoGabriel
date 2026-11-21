@@ -59,10 +59,10 @@ public class AmmoHUD : MonoBehaviour
         if (weaponNameText != null) weaponNameText.text = data.displayName;
 
         magazineText.text = current.CurrentMagazine.ToString();
-        bool lowAmmo = current.CurrentMagazine <= Mathf.CeilToInt(data.magazineSize * 0.25f);
+        bool lowAmmo = data.magazineSize > 1 && current.CurrentMagazine <= Mathf.CeilToInt(data.magazineSize * 0.25f);
         magazineText.color = lowAmmo ? lowAmmoColor : normalColor;
 
-        reserveText.text = "/ " + current.Reserve;
+        reserveText.text = data.ammoType != null ? "/ " + current.Reserve : string.Empty;
         if (reloadingIndicator != null) reloadingIndicator.SetActive(current.IsReloading);
     }
 }

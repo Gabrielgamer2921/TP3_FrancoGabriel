@@ -64,6 +64,7 @@ public class MissionDirector : MonoBehaviour
         if (mainGate != null)
         {
             mainGate.Broken += OnGateBroken;
+            mainGate.Restored += OnGateRestored;
             mainGate.RejectedHit += OnGateRejected;
         }
         if (keyring != null) keyring.KeyAdded += OnKeyAdded;
@@ -82,6 +83,7 @@ public class MissionDirector : MonoBehaviour
         if (mainGate != null)
         {
             mainGate.Broken -= OnGateBroken;
+            mainGate.Restored -= OnGateRestored;
             mainGate.RejectedHit -= OnGateRejected;
         }
         if (keyring != null) keyring.KeyAdded -= OnKeyAdded;
@@ -100,6 +102,11 @@ public class MissionDirector : MonoBehaviour
         if (phase != MissionPhase.BreachGate) return;
         SetPhase(keyring != null && keyring.Has(courtyardKeyId) ? MissionPhase.OpenCourtyard : MissionPhase.FindKey,
                  keyring != null && keyring.Has(courtyardKeyId) ? openDoorText : findKeyText);
+    }
+
+    private void OnGateRestored()
+    {
+        if (phase == MissionPhase.FindKey || phase == MissionPhase.OpenCourtyard) SetPhase(MissionPhase.BreachGate, breachText);
     }
 
     private void OnGateRejected()

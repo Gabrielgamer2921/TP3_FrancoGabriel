@@ -16,6 +16,8 @@ public class Checkpoint : MonoBehaviour
     [SerializeField] private Phase activeDuring = Phase.Always;
     [SerializeField] private List<MonoBehaviour> resetOnRespawn = new List<MonoBehaviour>();
     [SerializeField] private List<ZoneEncounter> activateOnReach = new List<ZoneEncounter>();
+    [SerializeField] private List<ZoneEncounter> resetPropsOfZones = new List<ZoneEncounter>();
+    [SerializeField] private List<DestructibleBarrier> lockBarriersOnReach = new List<DestructibleBarrier>();
 
     public string DisplayName => displayName;
     public Phase ActiveDuring => activeDuring;
@@ -41,12 +43,16 @@ public class Checkpoint : MonoBehaviour
     {
         foreach (ZoneEncounter encounter in activateOnReach)
             if (encounter != null) encounter.Activate();
+        foreach (DestructibleBarrier barrier in lockBarriersOnReach)
+            if (barrier != null) barrier.MakePermanent();
     }
 
     public void ResetEncounters()
     {
         foreach (MonoBehaviour target in resetOnRespawn)
             if (target is IResettable resettable) resettable.ResetState();
+        foreach (ZoneEncounter zone in resetPropsOfZones)
+            if (zone != null) zone.ResetProps();
     }
 
     private void OnEntered()

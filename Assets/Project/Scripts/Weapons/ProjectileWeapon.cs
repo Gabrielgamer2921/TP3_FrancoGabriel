@@ -33,6 +33,6 @@ public class ProjectileWeapon : Weapon
         velocity -= Physics.gravity * data.projectileGravityScale * flightTime * 0.5f;
 
         Projectile projectile = Instantiate(data.projectilePrefab, spawnPoint, Quaternion.LookRotation(velocity));
-        projectile.Launch(this, owner, velocity, data.projectileGravityScale, data.projectileLifetime);
+        projectile.Launch(this, owner, velocity, data.projectileGravityScale, data.projectileLifetime, data.projectileGravityDelay);
     }
 }

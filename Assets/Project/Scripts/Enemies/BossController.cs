@@ -20,6 +20,8 @@ public class BossController : MonoBehaviour
     [SerializeField] private float retreatSpeed = 7f;
     [SerializeField] private float returnDelay = 1.5f;
     [SerializeField] private GameObject rewardPickup;
+    [SerializeField] private Vector3 arenaCenter = new Vector3(0f, 5f, 6f);
+    [SerializeField] private Vector3 arenaSize = new Vector3(36f, 30f, 28f);
 
     private EnemyAI ai;
     private Health health;
@@ -142,6 +144,7 @@ public class BossController : MonoBehaviour
 
         if (reinforcementWave != null) reinforcementWave.ResetState();
         if (hideoutDoor != null) hideoutDoor.CloseAndSeal();
+        PropRegistry.ResetInside(new Bounds(arenaCenter, arenaSize));
         SetPresence(true);
 
         ai.ForgetPlayer();
@@ -165,6 +168,7 @@ public class BossController : MonoBehaviour
         StopAllCoroutines();
 
         if (health.Current < diabloStartHealth) health.Heal(diabloStartHealth - health.Current);
+        PropRegistry.ResetInside(new Bounds(arenaCenter, arenaSize));
         ai.ForgetPlayer();
         if (returnPoint != null && agent.isOnNavMesh) agent.Warp(returnPoint.position);
         StartCoroutine(WakeAfter(1.5f));

@@ -15,10 +15,14 @@ public class CrosshairUI : MonoBehaviour
 
     private void LateUpdate()
     {
-        bool visible = !weapons.IsAiming && !motor.IsSprinting;
+        BowWeapon bow = weapons.CurrentWeapon as BowWeapon;
+        bool bowAim = bow != null && weapons.IsAiming;
+        bool visible = (bowAim || !weapons.IsAiming) && !motor.IsSprinting;
         canvasGroup.alpha = Mathf.MoveTowards(canvasGroup.alpha, visible ? 1f : 0f, fadeSpeed * Time.deltaTime);
 
-        float gap = baseGap + weapons.CurrentSpread * pixelsPerDegree;
+        float gap = bowAim
+            ? Mathf.Lerp(baseGap + 18f, 1.5f, bow.Draw)
+            : baseGap + weapons.CurrentSpread * pixelsPerDegree;
         top.anchoredPosition = new Vector2(0f, gap);
         bottom.anchoredPosition = new Vector2(0f, -gap);
         left.anchoredPosition = new Vector2(-gap, 0f);

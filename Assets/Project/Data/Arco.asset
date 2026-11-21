@@ -1,0 +1,80 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c0273fcf29891c4c872995eb16d50b8, type: 3}
+  m_Name: Arco
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponDataSO
+  displayName: Arco
+  ammoType: {fileID: 0}
+  damage: 300
+  range: 120
+  damageFalloff:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  impactForce: 4
+  hitMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  pelletsPerShot: 1
+  pelletSpread: 0
+  noiseRadius: 6
+  timeBetweenShots: 0.2
+  shotBufferTime: 0.15
+  magazineSize: 1
+  startingMagazine: 1
+  reloadStartTime: 0.35
+  reloadPerRoundTime: 0.45
+  reloadEndTime: 0.3
+  canInterruptReload: 1
+  hipSpread: 4
+  aimSpread: 0.15
+  moveSpreadBonus: 1
+  airSpreadBonus: 3
+  recoilVertical: 1
+  recoilHorizontal: 0.3
+  visualKickBack: 0.03
+  visualKickRotation: 3
+  aimFov: 50
+  aimSpeed: 5
+  aimMoveMultiplier: 0.55
+  aimSensitivityMultiplier: 0.7
+  equipTime: 0.4
+  sprintToFireTime: 0.2
+  visualBulletPrefab: {fileID: 0}
+  visualBulletSpeed: 120
+  delayHitUntilBulletArrives: 1
+  projectilePrefab: {fileID: 3094334861816601935, guid: ca1c5167a4280a548a828d766857b3c9, type: 3}
+  projectileSpeed: 55
+  projectileGravityScale: 1
+  projectileLifetime: 8
+  zeroDistance: 0
+  projectileGravityDelay: 0.4

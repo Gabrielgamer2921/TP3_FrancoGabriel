@@ -68,4 +68,5 @@ public class WeaponDataSO : ScriptableObject
     [Min(0f)] public float projectileGravityScale = 0.4f;
     [Min(0.1f)] public float projectileLifetime = 4f;
     [Min(0f)] public float zeroDistance = 60f;
+    [Min(0f)] public float projectileGravityDelay;
 }

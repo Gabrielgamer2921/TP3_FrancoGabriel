@@ -65,10 +65,14 @@ public class ZoneEncounter : MonoBehaviour, IResettable
         foreach (MonoBehaviour linked in linkedResettables)
             if (linked is IResettable resettable) resettable.ResetState();
 
+        ResetProps();
+
         bool wasActive = spawned;
         spawned = false;
         if (wasActive || activeOnStart) Activate();
     }
+
+    public void ResetProps() => PropRegistry.ResetInside(Territory);
 
     private void Update()
     {

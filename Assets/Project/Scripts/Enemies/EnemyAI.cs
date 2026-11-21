@@ -57,6 +57,11 @@ public class EnemyAI : MonoBehaviour
     private bool canRingAlarm;
     private bool isCrouched;
     private bool hasTerritory;
+    private float nextHealthCheck;
+    private float stuckSeconds;
+    private float nextDiagnosticTime;
+
+    public static bool LogDiagnostics = true;
     private Bounds territory;
 
     public EnemyDataSO Data => data;
@@ -120,12 +125,18 @@ public class EnemyAI : MonoBehaviour
 
     private void Start()
     {
+        if (agent.enabled && !agent.isOnNavMesh && NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 4f, NavMesh.AllAreas))
+        {
+            agent.Warp(hit.position);
+            homePosition = hit.position;
+        }
         if (State == EnemyState.Patrol) EnterPatrol();
     }
 
     private void Update()
     {
         if (IsDead) return;
+        CheckHealth();
 
         PlayerTarget player = PlayerTarget.Instance;
         bool alerted = State == EnemyState.Combat || State == EnemyState.RingAlarm || State == EnemyState.Search;
@@ -439,9 +450,12 @@ public class EnemyAI : MonoBehaviour
             nextRepositionTime = Time.time + Random.Range(data.repositionIntervalMin, data.repositionIntervalMax);
             ReleaseCover();
 
-            if (!sees) MoveTo(lastKnownPosition);
+            if (!sees)
+            {
+                if (!MoveTo(lastKnownPosition)) MoveToward(lastKnownPosition, 6f);
+            }
             else if (data.usesCover && Random.value < data.coverChance && TryFindCover(player, true, out CoverPoint cover)) MoveToCover(cover);
-            else MoveTo(PickCombatPosition(player.transform.position));
+            else if (!MoveTo(PickCombatPosition(player.transform.position))) MoveToward(player.transform.position, 5f);
         }
 
         if (currentCover != null) UpdateCoverCycle(player, sees);
@@ -466,7 +480,7 @@ public class EnemyAI : MonoBehaviour
 
             if (!sees && Time.time - lastSeenTime > 2f) MoveTo(Vector3.Lerp(transform.position, lastKnownPosition, 0.5f));
             else if (data.usesCover && Random.value < data.coverChance && TryFindCover(player, false, out CoverPoint cover)) MoveToCover(cover);
-            else MoveTo(PickCombatPosition(player.transform.position));
+            else if (!MoveTo(PickCombatPosition(player.transform.position))) MoveToward(player.transform.position, 5f);
         }
 
         if (currentCover != null) UpdateCoverCycle(player, sees);
@@ -573,6 +587,7 @@ public class EnemyAI : MonoBehaviour
         foreach (CoverPoint cover in CoverPoint.All)
         {
             if (!cover.IsAvailableFor(this)) continue;
+            if (!InsideTerritory(cover.Position, 0.5f)) continue;
 
             float distanceToCover = Vector3.Distance(transform.position, cover.Position);
             if (distanceToCover > data.coverSearchRadius) continue;
@@ -599,7 +614,7 @@ public class EnemyAI : MonoBehaviour
         currentCover = cover;
         arrivedAtCover = false;
         hidingInCover = false;
-        MoveTo(cover.Position);
+        if (!MoveTo(cover.Position)) ReleaseCover();
     }
 
     private void ReleaseCover()
@@ -689,16 +704,99 @@ public class EnemyAI : MonoBehaviour
         return agent.remainingDistance <= agent.stoppingDistance + 0.2f;
     }
 
-    private void MoveTo(Vector3 destination)
+    private bool MoveTo(Vector3 destination)
     {
-        if (!agent.enabled || !agent.isOnNavMesh) return;
-        if (hasTerritory && !territory.Contains(destination))
+        if (!agent.enabled || !agent.isOnNavMesh) return false;
+
+        if (!hasTerritory)
         {
-            destination = territory.ClosestPoint(destination);
-            if (NavMesh.SamplePosition(destination, out NavMeshHit hit, 3f, NavMesh.AllAreas)) destination = hit.position;
+            agent.isStopped = false;
+            return agent.SetDestination(destination);
         }
+
+        if (!territory.Contains(destination)) destination = territory.ClosestPoint(destination);
+        if (!NavMesh.SamplePosition(destination, out NavMeshHit hit, 2.5f, NavMesh.AllAreas)) return false;
+        destination = hit.position;
+        if (!InsideTerritory(destination, 1.5f)) return false;
+
+        NavMeshPath path = new NavMeshPath();
+        if (!agent.CalculatePath(destination, path) || path.status != NavMeshPathStatus.PathComplete) return false;
+
+        bool returningHome = !InsideTerritory(transform.position, 2f);
+        if (!returningHome)
+        {
+            Vector3[] corners = path.corners;
+            for (int i = 1; i < corners.Length; i++)
+                if (!InsideTerritory(corners[i], 3f)) return false;
+        }
+
         agent.isStopped = false;
-        agent.SetDestination(destination);
+        return agent.SetPath(path);
+    }
+
+    private bool InsideTerritory(Vector3 point, float margin)
+    {
+        if (!hasTerritory) return true;
+        Bounds bounds = territory;
+        bounds.Expand(margin * 2f);
+        return bounds.Contains(point);
+    }
+
+    private bool MoveToward(Vector3 target, float step)
+    {
+        Vector3 point = Vector3.MoveTowards(transform.position, target, step);
+        return MoveTo(point);
+    }
+
+    private void CheckHealth()
+    {
+        if (Time.time < nextHealthCheck) return;
+        nextHealthCheck = Time.time + 1f;
+
+        if (transform.position.y < -8f)
+        {
+            Diagnose("se cayó del mapa: vuelve a su puesto");
+            if (agent.enabled) agent.Warp(homePosition);
+            else transform.position = homePosition;
+            return;
+        }
+
+        if (!agent.enabled) return;
+
+        if (!agent.isOnNavMesh)
+        {
+            if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 4f, NavMesh.AllAreas)) agent.Warp(hit.position);
+            else Diagnose("no está sobre el NavMesh y no encontré dónde ubicarlo");
+            return;
+        }
+
+        if (hasTerritory && !InsideTerritory(transform.position, 6f))
+        {
+            Diagnose("salió de su territorio: vuelve");
+            ReleaseCover();
+            MoveTo(homePosition);
+            return;
+        }
+
+        bool shouldMove = agent.hasPath && !agent.isStopped && !agent.pathPending && agent.remainingDistance > agent.stoppingDistance + 0.6f;
+        if (shouldMove && agent.velocity.sqrMagnitude < 0.04f) stuckSeconds += 1f;
+        else stuckSeconds = 0f;
+
+        if (stuckSeconds >= 3f)
+        {
+            Diagnose("estaba trabado: busca otra posición");
+            stuckSeconds = 0f;
+            ReleaseCover();
+            StopMoving();
+            nextRepositionTime = 0f;
+        }
+    }
+
+    private void Diagnose(string message)
+    {
+        if (!LogDiagnostics || Time.time < nextDiagnosticTime) return;
+        nextDiagnosticTime = Time.time + 5f;
+        Debug.Log($"[IA] {name} ({State}) {message}", this);
     }
 
     private void StopMoving()

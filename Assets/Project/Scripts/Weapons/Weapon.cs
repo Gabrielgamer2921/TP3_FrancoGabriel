@@ -58,9 +58,19 @@ public abstract class Weapon : MonoBehaviour
         {
             AimLocalPosition = new Vector3(0f, HipLocalPosition.y * 0.5f, HipLocalPosition.z);
         }
+
+        OnInitialized();
     }
 
-    private void OnDisable()
+    public virtual float ViewLowerAmount => 0f;
+
+    protected virtual void OnInitialized() { }
+
+    protected virtual bool CanShootNow() => true;
+
+    protected virtual void OnShotFired() { }
+
+    protected virtual void OnDisable()
     {
         StopReloadImmediate();
     }
@@ -73,6 +83,8 @@ public abstract class Weapon : MonoBehaviour
 
     public bool TryFire(float spread)
     {
+        if (!CanShootNow()) return false;
+
         if (IsReloading)
         {
             if (data.canInterruptReload && CurrentMagazine > 0) reloadCancelRequested = true;
@@ -99,6 +111,7 @@ public abstract class Weapon : MonoBehaviour
         NoiseSystem.Emit(owner.transform.position, data.noiseRadius, owner);
         look.AddRecoil(data.recoilVertical, Random.Range(-data.recoilHorizontal, data.recoilHorizontal));
         Fired?.Invoke();
+        OnShotFired();
         AmmoChanged?.Invoke();
         return true;
     }

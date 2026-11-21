@@ -127,12 +127,13 @@ public class WeaponViewAnimator : MonoBehaviour
             + swayOffset + bob + recoilOffset
             + meleePositionOffset * meleeWeight
             + Vector3.down * equipDropDistance * (1f - equipSmooth)
-            + Vector3.down * holsterDropDistance * holsterSmooth;
+            + Vector3.down * holsterDropDistance * holsterSmooth
+            + Vector3.down * 0.24f * current.ViewLowerAmount;
 
         Vector3 rotation = sprintRotation * sprintBlend
             + recoilRotation
             + meleeRotation * meleeWeight
-            + new Vector3(equipDropAngle * (1f - equipSmooth) + holsterAngle * holsterSmooth, 0f, 0f);
+            + new Vector3(equipDropAngle * (1f - equipSmooth) + holsterAngle * holsterSmooth + 38f * current.ViewLowerAmount, 0f, 0f);
 
         current.transform.localPosition = position;
         current.transform.localRotation = Quaternion.Euler(rotation);

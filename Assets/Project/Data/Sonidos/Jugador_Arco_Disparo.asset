@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b5911d2bbe9df14696287776ecd1163, type: 3}
+  m_Name: Jugador_Arco_Disparo
+  m_EditorClassIdentifier: Assembly-CSharp::SoundSO
+  clips:
+  - {fileID: 8300000, guid: 6f1880557ed89ba45953425c71effd65, type: 3}
+  - {fileID: 8300000, guid: f8f51b8d229ba064084c950eb818cc80, type: 3}
+  - {fileID: 8300000, guid: da1e1c99c680c9e4aa588a74977a84b4, type: 3}
+  volume: 0.9
+  pitchMin: 0.95
+  pitchMax: 1.05
+  spatialBlend: 0
+  minDistance: 2
+  maxDistance: 60
+  cooldown: 0
